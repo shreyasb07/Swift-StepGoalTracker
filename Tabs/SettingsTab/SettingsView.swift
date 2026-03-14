@@ -14,6 +14,12 @@ struct SettingsView: View {
     
     @State private var showResetMilestonesConfirmation = false
     @State private var showResetStreakConfirmation = false
+    
+    private var appVersion: String {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "–"
+        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "–"
+        return "\(version) (\(build))"
+    }
 
     var notificationStatusRow: some View {
         switch notifications.authorizationStatus {
@@ -181,6 +187,17 @@ struct SettingsView: View {
                                     }
                                 }
                                 #endif
+                // MARK: - About
+                Section("About") {
+                    HStack {
+                        Text("Version")
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Text(appVersion)
+                            .foregroundStyle(.secondary)
+                            .monospacedDigit()
+                    }
+                }
             }
             .navigationTitle("Settings")
         }
