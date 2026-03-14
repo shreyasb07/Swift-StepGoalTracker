@@ -10,7 +10,7 @@ import WatchConnectivity
 import SwiftUI
 
 class PhoneConnector: NSObject, WCSessionDelegate, ObservableObject {
-    @AppStorage("stepGoal") var stepGoal: Double = 8000
+    @AppStorage("stepGoal") var stepGoal: Double = 10000
     
     override init() {
         super.init()

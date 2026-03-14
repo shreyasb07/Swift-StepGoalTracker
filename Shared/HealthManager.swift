@@ -21,7 +21,7 @@ class HealthManager: ObservableObject {
     private var timer: Timer?
     private var anchoredQuery: HKAnchoredObjectQuery?
     let healthStore = HKHealthStore()
-    @Published var stepCount: Double = 0
+    @Published var stepCount: Double = 3000
     @AppStorage("currentStreak") var currentStreak: Int = 0
     @AppStorage("bestStreak") var bestStreak: Int = 0
     @AppStorage("lastGoalMetDate") var lastGoalMetDateString: String = ""

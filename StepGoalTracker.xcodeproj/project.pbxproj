@@ -7,11 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B103BF942F52BACB00EEA2B9 /* PhoneConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = B103BF932F52BACB00EEA2B9 /* PhoneConnector.swift */; };
-		B103BF952F52BACB00EEA2B9 /* PhoneConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = B103BF932F52BACB00EEA2B9 /* PhoneConnector.swift */; };
 		B1CF3F262F31A3B3009CFBB5 /* StepGoalTrackerWatch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = B1CF3F192F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		B1CF3F2F2F31A429009CFBB5 /* HealthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1CF3F2E2F31A429009CFBB5 /* HealthManager.swift */; };
-		B1CF3F302F31A429009CFBB5 /* HealthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1CF3F2E2F31A429009CFBB5 /* HealthManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,13 +35,21 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		B103BF932F52BACB00EEA2B9 /* PhoneConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneConnector.swift; sourceTree = "<group>"; };
 		B1CF3EFE2F319F6D009CFBB5 /* StepGoalTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StepGoalTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1CF3F192F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "StepGoalTrackerWatch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B1CF3F2E2F31A429009CFBB5 /* HealthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		B14517832F63A5E2003FAC81 /* Exceptions for "Tabs" folder in "StepGoalTrackerWatch Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				HomeTab/HomeView.swift,
+				SettingsTab/SettingsView.swift,
+				SummaryTab/SummaryView.swift,
+				SummaryTab/WeeklyStepsChart.swift,
+			);
+			target = B1CF3F182F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App */;
+		};
 		B1D596BC2F58ADF300FCB737 /* Exceptions for "StepGoalTracker" folder in "StepGoalTracker" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -59,6 +63,19 @@
 		B14517432F610097003FAC81 /* Notifications */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Notifications;
+			sourceTree = "<group>";
+		};
+		B145176E2F610A07003FAC81 /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		B14517702F610A46003FAC81 /* Tabs */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B14517832F63A5E2003FAC81 /* Exceptions for "Tabs" folder in "StepGoalTrackerWatch Watch App" target */,
+			);
+			path = Tabs;
 			sourceTree = "<group>";
 		};
 		B1CF3F002F319F6D009CFBB5 /* StepGoalTracker */ = {
@@ -104,8 +121,8 @@
 		B1CF3EF52F319F6D009CFBB5 = {
 			isa = PBXGroup;
 			children = (
-				B103BF932F52BACB00EEA2B9 /* PhoneConnector.swift */,
-				B1CF3F2E2F31A429009CFBB5 /* HealthManager.swift */,
+				B145176E2F610A07003FAC81 /* Shared */,
+				B14517702F610A46003FAC81 /* Tabs */,
 				B14517432F610097003FAC81 /* Notifications */,
 				B1CF3F002F319F6D009CFBB5 /* StepGoalTracker */,
 				B1CF3F1A2F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App */,
@@ -142,6 +159,8 @@
 			);
 			fileSystemSynchronizedGroups = (
 				B14517432F610097003FAC81 /* Notifications */,
+				B145176E2F610A07003FAC81 /* Shared */,
+				B14517702F610A46003FAC81 /* Tabs */,
 				B1CF3F002F319F6D009CFBB5 /* StepGoalTracker */,
 			);
 			name = StepGoalTracker;
@@ -165,6 +184,8 @@
 			);
 			fileSystemSynchronizedGroups = (
 				B14517432F610097003FAC81 /* Notifications */,
+				B145176E2F610A07003FAC81 /* Shared */,
+				B14517702F610A46003FAC81 /* Tabs */,
 				B1CF3F1A2F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App */,
 			);
 			name = "StepGoalTrackerWatch Watch App";
@@ -234,8 +255,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B1CF3F2F2F31A429009CFBB5 /* HealthManager.swift in Sources */,
-				B103BF952F52BACB00EEA2B9 /* PhoneConnector.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -243,8 +262,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B103BF942F52BACB00EEA2B9 /* PhoneConnector.swift in Sources */,
-				B1CF3F302F31A429009CFBB5 /* HealthManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
