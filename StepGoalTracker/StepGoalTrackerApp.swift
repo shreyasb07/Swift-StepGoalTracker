@@ -9,6 +9,9 @@ import SwiftUI
 
 @main
 struct StepGoalTrackerApp: App {
+    init() {
+        LogRotationManager.shared.rotate()
+    }
 
     var body: some Scene {
         WindowGroup {

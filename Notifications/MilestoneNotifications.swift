@@ -89,7 +89,7 @@ extension NotificationManager {
 
         UNUserNotificationCenter.current().add(request) { error in
             if let error {
-                print(
+                Logger.error(
                     "Failed to schedule milestone notification: \(error.localizedDescription)"
                 )
             }

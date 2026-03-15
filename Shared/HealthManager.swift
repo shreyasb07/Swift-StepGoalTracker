@@ -32,13 +32,13 @@ class HealthManager: ObservableObject {
             success,
             error in
             if success {
-                print("Authorization successful")
+                Logger.success("Authorization successful")
                 self.healthStore.enableBackgroundDelivery(
                     for: stepType,
                     frequency: .immediate
                 ) { success, error in
                     if !success {
-                        print("Failed to enable background delivery")
+                        Logger.error("Failed to enable background delivery")
                     }
                 }
                 
@@ -68,7 +68,7 @@ class HealthManager: ObservableObject {
         ) { [weak self] _, _, _, _, error in
             // Initial results handler
             if let error = error {
-                print("Anchored query error: \(error.localizedDescription)")
+                Logger.error("Anchored query error: \(error.localizedDescription)")
                 return
             }
             Task { await self?.fetchTodaySteps(goal: goal) }
@@ -77,7 +77,7 @@ class HealthManager: ObservableObject {
         // This handler fires every time HealthKit has new step data
         query.updateHandler = { [weak self] _, _, _, _, error in
             if let error = error {
-                print(
+                Logger.error(
                     "Anchored query update error: \(error.localizedDescription)"
                 )
                 return

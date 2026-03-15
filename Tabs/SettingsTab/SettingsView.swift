@@ -152,7 +152,7 @@ struct SettingsView: View {
                         Button("Reset", role: .destructive){
                             UserDefaults.standard.removeObject(forKey: "firedMilestonesToday")
                             UserDefaults.standard.removeObject(forKey: "milestoneFiredDate")
-                            print("Milestones reset")
+                            Logger.info("Milestones reset")
                         }
                         Button("Cancel", role: .cancel){}
                     } message: {
@@ -182,8 +182,8 @@ struct SettingsView: View {
                                     Button("Print Milestone State") {
                                         let fired = UserDefaults.standard.array(forKey: "firedMilestonesToday") ?? []
                                         let date = UserDefaults.standard.string(forKey: "milestoneFiredDate") ?? "none"
-                                        print("Fired milestones: \(fired)")
-                                        print("Milestone date: \(date)")
+                                        Logger.info("Fired milestones: \(fired)")
+                                        Logger.info("Milestone date: \(date)")
                                     }
                                 }
                                 #endif

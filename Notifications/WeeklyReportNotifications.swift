@@ -51,7 +51,7 @@ extension NotificationManager {
 
         UNUserNotificationCenter.current().add(request) { error in
             if let error {
-                print(
+                Logger.error(
                     "Failed to schedule weekly report: \(error.localizedDescription)"
                 )
             }

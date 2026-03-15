@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B14517A22F673ADD003FAC81 /* ZipArchive in Frameworks */ = {isa = PBXBuildFile; productRef = B14517A12F673ADD003FAC81 /* ZipArchive */; };
 		B1CF3F262F31A3B3009CFBB5 /* StepGoalTrackerWatch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = B1CF3F192F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -98,6 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B14517A22F673ADD003FAC81 /* ZipArchive in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -165,6 +167,7 @@
 			);
 			name = StepGoalTracker;
 			packageProductDependencies = (
+				B14517A12F673ADD003FAC81 /* ZipArchive */,
 			);
 			productName = StepGoalTracker;
 			productReference = B1CF3EFE2F319F6D009CFBB5 /* StepGoalTracker.app */;
@@ -222,6 +225,9 @@
 			);
 			mainGroup = B1CF3EF52F319F6D009CFBB5;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B14517A02F673ADD003FAC81 /* XCRemoteSwiftPackageReference "ZipArchive" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B1CF3EFF2F319F6D009CFBB5 /* Products */;
 			projectDirPath = "";
@@ -566,6 +572,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B14517A02F673ADD003FAC81 /* XCRemoteSwiftPackageReference "ZipArchive" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ZipArchive/ZipArchive";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.6.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B14517A12F673ADD003FAC81 /* ZipArchive */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B14517A02F673ADD003FAC81 /* XCRemoteSwiftPackageReference "ZipArchive" */;
+			productName = ZipArchive;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B1CF3EF62F319F6D009CFBB5 /* Project object */;
 }
