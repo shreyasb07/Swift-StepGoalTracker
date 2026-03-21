@@ -33,6 +33,7 @@ struct ContentView: View {
                 }
                 .tag(2)
         }
+        .tint(Color("motivationText"))
         .onAppear {
             NotificationManager.shared.requestAuthorization()
             NotificationManager.shared.checkAuthorizationStatus()

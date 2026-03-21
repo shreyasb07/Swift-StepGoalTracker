@@ -8,23 +8,121 @@ import SwiftUI
 @MainActor
 class HealthManager: ObservableObject {
 
-    @Published var weeklySteps: [DayStep] = []
-    @AppStorage("previousStreak") var previousStreak: Int = 0
-
-    struct DayStep: Identifiable {
+    struct DayStep: Identifiable, Equatable {
         let id = UUID()
         let label: String
+        let dayNumber: String
         let steps: Double
         let isToday: Bool
+        let isFuture: Bool
     }
 
-    private var timer: Timer?
     private var anchoredQuery: HKAnchoredObjectQuery?
     let healthStore = HKHealthStore()
+    //Week
+    @Published var weeklySteps: [DayStep] = []
+    @Published var selectedWeekSteps: [DayStep] = []
+    @Published var selectedWeekOffset: Int = 0
+    //Month
+    @Published var selectedMonthlySteps: [DayStep] = []
+    @Published var selectedMonthOffset: Int = 0
     @Published var stepCount: Double = 3000
+
     @AppStorage("currentStreak") var currentStreak: Int = 0
     @AppStorage("bestStreak") var bestStreak: Int = 0
     @AppStorage("lastGoalMetDate") var lastGoalMetDateString: String = ""
+
+    @AppStorage("previousStreak") var previousStreak: Int = 0
+
+    //MARK: - HealthKit Helpers
+
+    private func stepType() -> HKQuantityType {
+        return HKQuantityType.quantityType(forIdentifier: .stepCount)!
+    }
+
+    private func predicate(from start: Date, to end: Date = Date())
+        -> NSPredicate
+    {
+        HKQuery.predicateForSamples(withStart: start, end: end)
+    }
+
+    private func extractSteps(
+        from result: HKStatisticsCollection?,
+        for day: Date
+    ) -> Double {
+        result?.statistics(for: day)?.sumQuantity()?.doubleValue(for: .count())
+            ?? 0
+    }
+    
+    private static let dayNumberFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d"  // "1", "2"... "31"
+        return formatter
+    }()
+
+    //MARK: - Weekly steps core query
+    //Single Shared Helper - both fetchWeeklySteps and fetchSelectedWeek can use this
+    private func fetchSteps(
+        from startDate: Date,
+        days: [Date],
+        isCurrentPeriod: Bool
+    ) async -> [DayStep] {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let endDate =
+            isCurrentPeriod
+        ? Date() : calendar.date(byAdding: .day, value: days.count, to: startDate) ?? startDate
+
+        let query = HKStatisticsCollectionQuery(
+            quantityType: stepType(),
+            quantitySamplePredicate: predicate(from: startDate, to: endDate),
+            options: .cumulativeSum,
+            anchorDate: startDate,
+            intervalComponents: DateComponents(day: 1)
+        )
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEE"
+
+        return await withCheckedContinuation { continuation in
+            query.initialResultsHandler = { [weak self] _, results, _ in
+                guard let self, let results else {
+                    continuation.resume(returning: [])
+                    return
+                }
+
+                // Collect raw step values on background thread
+                // using only value types — no @MainActor access
+                var rawSteps: [(date: Date, steps: Double)] = []
+                for day in days {
+                    let isFuture = day > today
+                    let steps =
+                        isFuture
+                        ? 0
+                        : (results.statistics(for: day)?.sumQuantity()?
+                            .doubleValue(for: .count()) ?? 0)
+                    rawSteps.append((date: day, steps: steps))
+                }
+                Task { @MainActor in
+                    var built: [DayStep] = []
+                    for rawStep in rawSteps {
+                        built.append(
+                            DayStep(
+                                label: formatter.string(from: rawStep.date),
+                                dayNumber: Self.dayNumberFormatter.string(from: rawStep.date),
+                                steps: rawStep.steps,
+                                isToday: calendar.isDateInToday(rawStep.date),
+                                isFuture: rawStep.date > today
+                            )
+                        )
+                    }
+                    continuation.resume(returning: built)
+                }
+            }
+            healthStore.execute(query)
+
+        }
+    }
 
     func requestAuthorization(goal: Double) {
         let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount)!
@@ -41,7 +139,7 @@ class HealthManager: ObservableObject {
                         Logger.error("Failed to enable background delivery")
                     }
                 }
-                
+
                 Task { @MainActor in
                     self.startAnchoredQuery(goal: goal)
                     await self.fetchTodaySteps(goal: goal)
@@ -52,23 +150,19 @@ class HealthManager: ObservableObject {
     }
 
     func startAnchoredQuery(goal: Double) {
-        let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount)!
         let startOfDay = Calendar.current.startOfDay(for: Date())
-        let predicate = HKQuery.predicateForSamples(
-            withStart: startOfDay,
-            end: nil,  // nil end = live, up to now
-            options: .strictStartDate
-        )
 
         let query = HKAnchoredObjectQuery(
-            type: stepType,
-            predicate: predicate,
+            type: stepType(),
+            predicate: predicate(from: startOfDay, to: Date()),
             anchor: nil,
             limit: HKObjectQueryNoLimit
         ) { [weak self] _, _, _, _, error in
             // Initial results handler
             if let error = error {
-                Logger.error("Anchored query error: \(error.localizedDescription)")
+                Logger.error(
+                    "Anchored query error: \(error.localizedDescription)"
+                )
                 return
             }
             Task { await self?.fetchTodaySteps(goal: goal) }
@@ -89,7 +183,7 @@ class HealthManager: ObservableObject {
         healthStore.execute(query)
 
         #if os(watchOS)
-        startObserverQuery(goal: goal)
+            startObserverQuery(goal: goal)
         #endif
     }
 
@@ -104,107 +198,151 @@ class HealthManager: ObservableObject {
     }
 
     func fetchTodaySteps(goal: Double) async {
-        let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount)!
         let startOfDay = Calendar.current.startOfDay(for: Date())
-        let predicate = HKQuery.predicateForSamples(
-            withStart: startOfDay,
-            end: Date(),
-            options: .strictStartDate
-        )
-        
+
         await withCheckedContinuation { continuation in
             let query = HKStatisticsQuery(
-                quantityType: stepType,
-                quantitySamplePredicate: predicate,
+                quantityType: stepType(),
+                quantitySamplePredicate: predicate(from: startOfDay),
                 options: .cumulativeSum
             ) { [weak self] _, result, _ in
                 guard let self else {
                     continuation.resume()
                     return
                 }
-                let steps = result?.sumQuantity()?.doubleValue(for: HKUnit.count()) ?? 0
-                DispatchQueue.main.async {
+                let steps =
+                    result?.sumQuantity()?.doubleValue(for: HKUnit.count()) ?? 0
+                Task { @MainActor in
                     self.stepCount = steps
                     self.updateStreak(steps: steps, goal: goal)
-                    NotificationManager.shared.checkAndSendMilestone(steps: steps, goal: goal)
+                    NotificationManager.shared.checkAndSendMilestone(
+                        steps: steps,
+                        goal: goal
+                    )
                     continuation.resume()
                 }
             }
             healthStore.execute(query)
         }
 
-        
     }
 
-    func fetchWeeklySteps(goal: Double) async{
-        let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount)!
+    //MARK: - Fetch Steps for current week
+    func fetchWeeklySteps(goal: Double) async {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
 
+        guard
+            let startOfWeek = calendar.dateInterval(
+                of: .weekOfMonth,
+                for: today
+            )?.start
+        else {
+            Logger.error("Failed to calculate start of the week")
+            return
+        }
         // Build 7 day slots ending today
         let days: [Date] = (0..<7).compactMap {
-            calendar.date(byAdding: .day, value: -$0, to: today)
-        }.reversed()
-
-        let weekAgo = days.first!
-        let predicate = HKQuery.predicateForSamples(
-            withStart: weekAgo,
-            end: Date(),
-            options: .strictStartDate
-        )
-
-        let query = HKStatisticsCollectionQuery(
-            quantityType: stepType,
-            quantitySamplePredicate: predicate,
-            options: .cumulativeSum,
-            anchorDate: today,
-            intervalComponents: DateComponents(day: 1)
-        )
-        
-        await withCheckedContinuation { continuation in
-            query.initialResultsHandler = { _, results, error in
-                guard let results else {
-                    continuation.resume()
-                    return
-                }
-
-                let formatter = DateFormatter()
-                formatter.dateFormat = "EEE"  // "Mon", "Tue", etc.
-
-                var built: [DayStep] = []
-                for day in days {
-                    let stat = results.statistics(for: day)
-                    let steps = stat?.sumQuantity()?.doubleValue(for: .count()) ?? 0
-                    built.append(
-                        DayStep(
-                            label: formatter.string(from: day),
-                            steps: steps,
-                            isToday: calendar.isDateInToday(day)
-                        )
-                    )
-                }
-
-                DispatchQueue.main.async {
-                    self.weeklySteps = built
-                    let daysGoalHit = built.filter { $0.steps >= goal }.count
-                        let activeDays = built.filter { $0.steps > 0 }
-                        let average = activeDays.isEmpty ? 0 : activeDays.map(\.steps).reduce(0, +) / Double(activeDays.count)
-                        
-                        NotificationManager.shared.scheduleWeeklyReport(
-                            daysGoalHit: daysGoalHit,
-                            averageSteps: average,
-                            currentStreak: self.currentStreak,
-                            previousStreak: self.previousStreak
-                        )
-                        
-                        // Update previous streak for next week's comparison
-                        self.previousStreak = self.currentStreak
-                        continuation.resume()
-                }
-            }
-
-            healthStore.execute(query)
+            calendar.date(byAdding: .day, value: $0, to: startOfWeek)
         }
+
+        let built = await fetchSteps(
+            from: startOfWeek,
+            days: days,
+            isCurrentPeriod: true
+        )
+        weeklySteps = built
+
+        //Schedule weekly report
+        let daysGoalHit = built.filter { !$0.isFuture && $0.steps >= goal }
+            .count
+        let activeDays = built.filter { !$0.isFuture && $0.steps > 0 }
+        let average =
+            activeDays.isEmpty
+            ? 0
+            : activeDays.map(\.steps).reduce(0, +) / Double(activeDays.count)
+
+        NotificationManager.shared.scheduleWeeklyReport(
+            daysGoalHit: daysGoalHit,
+            averageSteps: average,
+            currentStreak: currentStreak,
+            previousStreak: previousStreak
+        )
+        previousStreak = currentStreak
+        Logger.success("Fetched current week steps")
+    }
+
+    //MARK: - Fetch Selected Week
+    func fetchSelectedWeek(offset: Int, goal: Double) async {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+
+        // Calculate start of the target week
+        guard
+            let targetDate = calendar.date(
+                byAdding: .weekOfYear,
+                value: offset,
+                to: today
+            ),
+            let startOfWeek = calendar.dateInterval(
+                of: .weekOfYear,
+                for: targetDate
+            )?.start
+        else {
+            Logger.error("Failed to calculate week for offset \(offset)")
+            return
+        }
+
+        let days: [Date] = (0..<7).compactMap {
+            calendar.date(byAdding: .day, value: $0, to: startOfWeek)
+        }
+
+        let built = await fetchSteps(
+            from: startOfWeek,
+            days: days,
+            isCurrentPeriod: offset == 0
+        )
+        selectedWeekSteps = built
+        selectedWeekOffset = offset
+        Logger.success("Fetched week data for offset \(offset)")
+    }
+
+    func fetchSelectedMonth(offset: Int, goal: Double) async {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+
+        guard
+            let targetDate = calendar.date(
+                byAdding: .month,
+                value: offset,
+                to: today
+            ),
+            let startOfMonth = calendar.dateInterval(
+                of: .month,
+                for: targetDate
+            )?.start,
+            let daysInMonth = calendar.range(
+                of: .day,
+                in: .month,
+                for: targetDate
+            )?.count
+        else {
+            Logger.error("Failed to calculate month for offset. \(offset)")
+            return
+        }
+
+        let days: [Date] = (0..<daysInMonth).compactMap {
+            calendar.date(byAdding: .day, value: $0, to: startOfMonth)
+        }
+
+        let built = await fetchSteps(
+            from: startOfMonth,
+            days: days,
+            isCurrentPeriod: offset == 0
+        )
+        selectedMonthlySteps = built
+        selectedMonthOffset = offset
+        Logger.success("Fetched month data for offset: \(offset)")
     }
 
     func updateStreak(steps: Double, goal: Double) {
@@ -235,7 +373,7 @@ class HealthManager: ObservableObject {
         currentStreak = newStreak
         bestStreak = max(bestStreak, newStreak)
         lastGoalMetDateString = formatter.string(from: today)
-        
+
     }
 
     #if os(watchOS)
@@ -253,7 +391,7 @@ class HealthManager: ObservableObject {
                     completionHandler()
                     return
                 }
-                Task {await self?.fetchTodaySteps(goal: goal) }
+                Task { await self?.fetchTodaySteps(goal: goal) }
                 completionHandler()
             }
 

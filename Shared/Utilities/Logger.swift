@@ -91,7 +91,9 @@ struct Logger {
         
         // File output — always, including release builds
         // so we can collect logs from real devices
+        #if os(iOS)
         LogFileWriter.shared.write(entry)
+        #endif
     }
 }
 

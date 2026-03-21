@@ -19,12 +19,12 @@ struct StepProgressRing: View {
         ZStack {
             //Track
             Circle()
-                .stroke(Color.blue.opacity(0.15), lineWidth: 20)
+                .stroke(Color.green.opacity(0.15), lineWidth: 20)
             
             //Progress
             Circle()
                 .trim(from: 0, to: CGFloat(progress))
-                .stroke(steps >= goal ? Color.green: Color.blue, style: StrokeStyle(lineWidth: 20, lineCap: .round))
+                .stroke(Color.green, style: StrokeStyle(lineWidth: 20, lineCap: .round))
                 .rotationEffect(.degrees(-90))
                 .animation(.easeInOut(duration: 1.0), value: progress)
             

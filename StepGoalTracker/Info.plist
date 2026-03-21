@@ -2,9 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSHealthShareUsageDescription</key>
+	<string>The app reads your step count to track your daily activity and help you reach your fitness goals.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>The app does not write health data. This permission is required by the HealthKit framework.</string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.shreyas.StepGoalTracker</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
+		<string>processing</string>
 	</array>
 </dict>
 </plist>

@@ -24,7 +24,7 @@ struct MilestoneProgressRow: View {
                 VStack(spacing: 6) {
                     ZStack {
                         Circle()
-                            .fill(isHit(milestone) ? milestoneColor(milestone): Color.secondary.opacity(0.2))
+                            .fill(isHit(milestone) ? milestoneColor(milestone): Color.orange.opacity(0.2))
                             .frame(width: 36, height: 36)
                         Image(systemName: isHit(milestone) ? "checkmark": "circle.dotted")
                             .font(.system(size: 14, weight: .bold))
@@ -40,7 +40,7 @@ struct MilestoneProgressRow: View {
                 //Connector line between milestones
                 if milestone != milestones.last {
                     Rectangle()
-                        .fill(isHit(milestone) ? milestoneColor(milestone) : Color.secondary.opacity(0.2))
+                        .fill(isHit(milestone) ? milestoneColor(milestone) : Color.orange.opacity(0.2))
                         .frame(height: 2)
                         .frame(maxWidth: .infinity)
                         .offset(y: -10) // align with center of circle
@@ -53,13 +53,7 @@ struct MilestoneProgressRow: View {
 }
 
 private func milestoneColor(_ milestone: Int) -> Color {
-        switch milestone {
-        case 25:  return .blue
-        case 50:  return .blue
-        case 75:  return .orange
-        case 100: return .green
-        default:  return .blue
-        }
+    return .green
     }
 
 #Preview {

@@ -50,7 +50,7 @@ class LogExporter {
             let dateString = DateFormatter.exportDateFormatter.string(
                 from: Date()
             )
-            let zipFileName = "StepMaster_logs_\(dateString).zip"
+            let zipFileName = "Stepido_logs_\(dateString).zip"
             let zipURL = self.exportsDirectory.appendingPathComponent(
                 zipFileName
             )

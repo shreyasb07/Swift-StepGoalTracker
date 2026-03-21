@@ -29,7 +29,7 @@ class LogFileWriter {
     //MARK: - Serial Queue
     // All file writes happen on this queue so we never block the main thread
     private let writeQueue = DispatchQueue(
-        label: "com.stepmaster.logwriter",
+        label: "com.stepido.logwriter",
         qos: .background
     )
     

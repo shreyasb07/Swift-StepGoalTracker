@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B14517A22F673ADD003FAC81 /* ZipArchive in Frameworks */ = {isa = PBXBuildFile; productRef = B14517A12F673ADD003FAC81 /* ZipArchive */; };
+		B14517AF2F6747B3003FAC81 /* ZipArchive in Frameworks */ = {isa = PBXBuildFile; productRef = B14517AE2F6747B3003FAC81 /* ZipArchive */; settings = {ATTRIBUTES = (Required, ); }; };
 		B1CF3F262F31A3B3009CFBB5 /* StepGoalTrackerWatch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = B1CF3F192F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -44,10 +44,44 @@
 		B14517832F63A5E2003FAC81 /* Exceptions for "Tabs" folder in "StepGoalTrackerWatch Watch App" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				HomeTab/Components/ShareableRingCard.swift,
 				HomeTab/HomeView.swift,
 				SettingsTab/SettingsView.swift,
+				SummaryTab/Components/BarColumn.swift,
+				SummaryTab/Components/BarLabel.swift,
+				SummaryTab/Components/BestDayRow.swift,
+				SummaryTab/Components/GoalLegend.swift,
+				SummaryTab/Components/GoalLine.swift,
+				SummaryTab/Components/MonthlyStepsChart.swift,
+				SummaryTab/Components/PeriodNavigationHeader.swift,
+				SummaryTab/Components/ShareableChartCard.swift,
+				SummaryTab/Components/StatRow.swift,
+				SummaryTab/Components/WeeklyStepsChart.swift,
 				SummaryTab/SummaryView.swift,
-				SummaryTab/WeeklyStepsChart.swift,
+			);
+			target = B1CF3F182F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App */;
+		};
+		B14517B32F674AF1003FAC81 /* Exceptions for "Shared" folder in "StepGoalTrackerWatch Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Utilities/LogExporter.swift,
+				Utilities/LogFileWriter.swift,
+				Utilities/LogRotationManager.swift,
+			);
+			target = B1CF3F182F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App */;
+		};
+		B14517B42F674B29003FAC81 /* Exceptions for "Utilities" folder in "StepGoalTrackerWatch Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				ShareSheet.swift,
+				ViewImageRenderer.swift,
+			);
+			target = B1CF3F182F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App */;
+		};
+		B14517E02F6F0B73003FAC81 /* Exceptions for "StepGoalTrackerWatch Watch App" folder in "StepGoalTrackerWatch Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"StepGoalTrackerWatch-Watch-App-Info.plist",
 			);
 			target = B1CF3F182F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App */;
 		};
@@ -68,6 +102,9 @@
 		};
 		B145176E2F610A07003FAC81 /* Shared */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B14517B32F674AF1003FAC81 /* Exceptions for "Shared" folder in "StepGoalTrackerWatch Watch App" target */,
+			);
 			path = Shared;
 			sourceTree = "<group>";
 		};
@@ -77,6 +114,14 @@
 				B14517832F63A5E2003FAC81 /* Exceptions for "Tabs" folder in "StepGoalTrackerWatch Watch App" target */,
 			);
 			path = Tabs;
+			sourceTree = "<group>";
+		};
+		B14517A32F6744F9003FAC81 /* Utilities */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B14517B42F674B29003FAC81 /* Exceptions for "Utilities" folder in "StepGoalTrackerWatch Watch App" target */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 		B1CF3F002F319F6D009CFBB5 /* StepGoalTracker */ = {
@@ -89,6 +134,9 @@
 		};
 		B1CF3F1A2F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B14517E02F6F0B73003FAC81 /* Exceptions for "StepGoalTrackerWatch Watch App" folder in "StepGoalTrackerWatch Watch App" target */,
+			);
 			path = "StepGoalTrackerWatch Watch App";
 			sourceTree = "<group>";
 		};
@@ -99,7 +147,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B14517A22F673ADD003FAC81 /* ZipArchive in Frameworks */,
+				B14517AF2F6747B3003FAC81 /* ZipArchive in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -123,6 +171,7 @@
 		B1CF3EF52F319F6D009CFBB5 = {
 			isa = PBXGroup;
 			children = (
+				B14517A32F6744F9003FAC81 /* Utilities */,
 				B145176E2F610A07003FAC81 /* Shared */,
 				B14517702F610A46003FAC81 /* Tabs */,
 				B14517432F610097003FAC81 /* Notifications */,
@@ -163,11 +212,12 @@
 				B14517432F610097003FAC81 /* Notifications */,
 				B145176E2F610A07003FAC81 /* Shared */,
 				B14517702F610A46003FAC81 /* Tabs */,
+				B14517A32F6744F9003FAC81 /* Utilities */,
 				B1CF3F002F319F6D009CFBB5 /* StepGoalTracker */,
 			);
 			name = StepGoalTracker;
 			packageProductDependencies = (
-				B14517A12F673ADD003FAC81 /* ZipArchive */,
+				B14517AE2F6747B3003FAC81 /* ZipArchive */,
 			);
 			productName = StepGoalTracker;
 			productReference = B1CF3EFE2F319F6D009CFBB5 /* StepGoalTracker.app */;
@@ -189,6 +239,7 @@
 				B14517432F610097003FAC81 /* Notifications */,
 				B145176E2F610A07003FAC81 /* Shared */,
 				B14517702F610A46003FAC81 /* Tabs */,
+				B14517A32F6744F9003FAC81 /* Utilities */,
 				B1CF3F1A2F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App */,
 			);
 			name = "StepGoalTrackerWatch Watch App";
@@ -226,7 +277,7 @@
 			mainGroup = B1CF3EF52F319F6D009CFBB5;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				B14517A02F673ADD003FAC81 /* XCRemoteSwiftPackageReference "ZipArchive" */,
+				B14517AD2F6747B3003FAC81 /* XCRemoteSwiftPackageReference "ZipArchive" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B1CF3EFF2F319F6D009CFBB5 /* Products */;
@@ -406,6 +457,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = StepGoalTracker/StepGoalTracker.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -414,7 +466,10 @@
 				DEVELOPMENT_TEAM = DXZ6DQRHD3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = StepGoalTracker/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Stepido;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "We need to read your step count to help you reach your daily goal";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -426,6 +481,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.shreyas.StepGoalTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -443,6 +499,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = StepGoalTracker/StepGoalTracker.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -451,7 +508,10 @@
 				DEVELOPMENT_TEAM = DXZ6DQRHD3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = StepGoalTracker/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Stepido;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "We need to read your step count to help you reach your daily goal";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -463,6 +523,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.shreyas.StepGoalTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -487,7 +548,8 @@
 				DEVELOPMENT_TEAM = DXZ6DQRHD3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = StepGoalTrackerWatch;
+				INFOPLIST_FILE = "StepGoalTrackerWatch-Watch-App-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = StepidoWatch;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "We need to read your step count to help you reach your daily goal.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.shreyas.StepGoalTracker;
@@ -520,7 +582,8 @@
 				DEVELOPMENT_TEAM = DXZ6DQRHD3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = StepGoalTrackerWatch;
+				INFOPLIST_FILE = "StepGoalTrackerWatch-Watch-App-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = StepidoWatch;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "We need to read your step count to help you reach your daily goal.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.shreyas.StepGoalTracker;
@@ -574,7 +637,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		B14517A02F673ADD003FAC81 /* XCRemoteSwiftPackageReference "ZipArchive" */ = {
+		B14517AD2F6747B3003FAC81 /* XCRemoteSwiftPackageReference "ZipArchive" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ZipArchive/ZipArchive";
 			requirement = {
@@ -585,9 +648,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		B14517A12F673ADD003FAC81 /* ZipArchive */ = {
+		B14517AE2F6747B3003FAC81 /* ZipArchive */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = B14517A02F673ADD003FAC81 /* XCRemoteSwiftPackageReference "ZipArchive" */;
+			package = B14517AD2F6747B3003FAC81 /* XCRemoteSwiftPackageReference "ZipArchive" */;
 			productName = ZipArchive;
 		};
 /* End XCSwiftPackageProductDependency section */

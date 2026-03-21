@@ -4,7 +4,7 @@
 //
 //  Created by Shreyas Bhosale on 3/10/26.
 //
-
+import UIKit
 import Foundation
 import UserNotifications
 
@@ -25,7 +25,7 @@ extension NotificationManager {
             UserDefaults.standard.set(Array(newValue), forKey: milestonesKey)
         }
     }
-    
+
     func resetMilestonesIfNewDay() {
         let today = Calendar.current.startOfDay(for: Date())
         let formatter = ISO8601DateFormatter()
@@ -41,7 +41,7 @@ extension NotificationManager {
             )
         }
     }
-    
+
     func checkAndSendMilestone(steps: Double, goal: Double) {
         resetMilestonesIfNewDay()
 
@@ -75,6 +75,27 @@ extension NotificationManager {
             content.body = "You've hit your step goal today. Amazing work!"
         default:
             break
+        }
+
+        // Attach the app icon as the notification image
+        // Replace the Bundle.main.url approach with UIImage from assets
+        if let image = UIImage(named: "AppIcon"),
+           let data = image.pngData() {
+            let tempURL = FileManager.default.temporaryDirectory
+                .appendingPathComponent("AppIcon.png")
+            try? data.write(to: tempURL)
+            do{
+                let attachment = try UNNotificationAttachment(
+                    identifier: "icon",
+                    url: tempURL,
+                    options: nil
+                )
+                content.attachments = [attachment]
+                Logger.success("Notification attachment created successfully")
+            }catch {
+                Logger.error("Failed to create attachment: \(error.localizedDescription)")
+            }
+            
         }
 
         let trigger = UNTimeIntervalNotificationTrigger(

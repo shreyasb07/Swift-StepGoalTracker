@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSHealthShareUsageDescription</key>
+	<string>The app reads your step count on Apple Watch to track your daily activity in real time.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>The app does not write health data. This permission is required by the HealthKit framework.</string>
+	<key>UIBackgroundModes</key>
+	<array/>
+	<key>WKBackgroundModes</key>
+	<array>
+		<string>workout-processing</string>
+	</array>
+</dict>
+</plist>
