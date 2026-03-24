@@ -78,13 +78,6 @@
 			);
 			target = B1CF3F182F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App */;
 		};
-		B14517E02F6F0B73003FAC81 /* Exceptions for "StepGoalTrackerWatch Watch App" folder in "StepGoalTrackerWatch Watch App" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"StepGoalTrackerWatch-Watch-App-Info.plist",
-			);
-			target = B1CF3F182F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App */;
-		};
 		B1D596BC2F58ADF300FCB737 /* Exceptions for "StepGoalTracker" folder in "StepGoalTracker" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -134,9 +127,6 @@
 		};
 		B1CF3F1A2F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				B14517E02F6F0B73003FAC81 /* Exceptions for "StepGoalTrackerWatch Watch App" folder in "StepGoalTrackerWatch Watch App" target */,
-			);
 			path = "StepGoalTrackerWatch Watch App";
 			sourceTree = "<group>";
 		};
@@ -461,7 +451,7 @@
 				CODE_SIGN_ENTITLEMENTS = StepGoalTracker/StepGoalTracker.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"StepGoalTracker/Preview Content\"";
 				DEVELOPMENT_TEAM = DXZ6DQRHD3;
 				ENABLE_PREVIEWS = YES;
@@ -487,10 +477,11 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -503,7 +494,7 @@
 				CODE_SIGN_ENTITLEMENTS = StepGoalTracker/StepGoalTracker.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"StepGoalTracker/Preview Content\"";
 				DEVELOPMENT_TEAM = DXZ6DQRHD3;
 				ENABLE_PREVIEWS = YES;
@@ -529,10 +520,11 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

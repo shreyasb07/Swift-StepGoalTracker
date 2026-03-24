@@ -10,14 +10,11 @@ import SwiftUI
 struct MonthlyStepsChart: View {
     let days: [HealthManager.DayStep]
     let goal: Double
+    var isShareable: Bool = false
 
     private var maxSteps: Double {
         let actualMax = days.filter { !$0.isFuture }.map(\.steps).max() ?? 0
         return max(actualMax, goal) * 1.1
-    }
-
-    private var maxStepDay: HealthManager.DayStep? {
-        days.filter { !$0.isFuture }.max(by: { $0.steps < $1.steps })
     }
 
     private func barHeightRatio(for day: HealthManager.DayStep) -> CGFloat {
@@ -33,56 +30,97 @@ struct MonthlyStepsChart: View {
         return .red.opacity(0.3)
     }
 
+    // Y axis reference values
+    private var yAxisValues: [Double] {
+        let step = (maxSteps / 3 / 1000).rounded(.up) * 1000
+        return [step, step * 2, step * 3]
+    }
+
+    // Week start day numbers for X axis labels
+    private var weekMarkers: [String] {
+        days.filter { day in
+            guard let num = Int(day.dayNumber) else { return false }
+            return num == 1 || num == 8 || num == 15 || num == 22 || num == 29
+        }.map(\.dayNumber)
+    }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            ScrollViewReader { proxy in
-                ScrollView(.horizontal, showsIndicators: true) {
-                    HStack(alignment: .bottom, spacing: 4) {
-                        ForEach(days) { day in
-                            BarColumn(
-                                day: day,
-                                isMaxDay: day.id == maxStepDay?.id,
-                                barColor: barColor(for: day),
-                                heightRatio: barHeightRatio(for: day),
-                                useDayNumber: true
-                            )
-                            .frame(width: 28)
-                            .id(day.id)
+        VStack(alignment: .leading, spacing: 8) {
+            GeometryReader { geo in
+                let barAreaWidth = geo.size.width - 44  // subtract Y axis width
+                let barWidth = max(2, barAreaWidth / CGFloat(days.count) - 2)
+
+                ZStack(alignment: .bottomLeading) {
+                    // MARK: - Reference Lines + Y Axis
+                    VStack(spacing: 0) {
+                        ForEach(yAxisValues.reversed(), id: \.self) { value in
+                            HStack(spacing: 4) {
+                                Rectangle()
+                                    .fill(Color.secondary.opacity(0.15))
+                                    .frame(height: 0.5)
+                                Text(formatSteps(value))
+                                    .font(.system(size: 9))
+                                    .foregroundStyle(.secondary)
+                                    .frame(width: 36, alignment: .trailing)
+                            }
+                            if value != yAxisValues.first {
+                                Spacer()
+                            }
                         }
                     }
-                    .frame(height: 300)
-                    .overlay(alignment: .bottom) {
-                        GoalLine(goalRatio: CGFloat(goal / maxSteps))
+                    .frame(maxHeight: .infinity)
+
+                    // MARK: - Bars
+                    HStack(alignment: .bottom, spacing: 2) {
+                        ForEach(days) { day in
+                            RoundedRectangle(cornerRadius: 2)
+                                .fill(barColor(for: day))
+                                .frame(
+                                    width: barWidth,
+                                    height: max(
+                                        barHeightRatio(for: day) * geo.size.height,
+                                        day.steps > 0 && !day.isFuture ? 3 : 0
+                                    )
+                                )
+                                .animation(.easeInOut(duration: 0.5), value: barHeightRatio(for: day))
+                        }
                     }
-                    .padding(.horizontal, 4)
+                    .frame(width: barAreaWidth, alignment: .leading)  // ← leading alignment
                 }
-                .mask(
-                    LinearGradient(
-                        stops: [
-                            .init(color: .black, location: 0),
-                            .init(color: .black, location: 0.85),
-                            .init(color: .clear, location: 1.0)
-                        ],
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    )
-                )
-                .onAppear { 
-                    if let today = days.first(where: { $0.isToday }) {
-                        withAnimation(.easeInOut(duration: 0.8)) {
-                            proxy.scrollTo(today.id, anchor: .center)
+            }
+            .frame(height: 180)
+
+            // MARK: - X Axis — positioned absolutely
+            GeometryReader { geo in
+                let barAreaWidth = geo.size.width - 44
+                let barWidth = max(2, barAreaWidth / CGFloat(days.count) - 2)
+
+                ZStack(alignment: .topLeading) {
+                    ForEach(Array(days.enumerated()), id: \.element.id) { index, day in
+                        if let num = Int(day.dayNumber),
+                           [1, 8, 15, 22, 29].contains(num) {
+                            Text(day.dayNumber)
+                                .font(.system(size: 10))
+                                .foregroundStyle(.secondary)
+                                .offset(x: CGFloat(index) * (barWidth + 2))
                         }
                     }
                 }
             }
+            .frame(height: 16)
 
+            // MARK: - Goal Legend
             GoalLegend(goal: goal)
         }
         .padding(.vertical, 4)
     }
-    
+    private func formatSteps(_ value: Double) -> String {
+        if value >= 1000 {
+            return "\(Int(value / 1000))K"
+        }
+        return "\(Int(value))"
+    }
 }
-
 #Preview {
     MonthlyStepsChartPreview()
 }
@@ -106,11 +144,12 @@ private struct MonthlyStepsChartPreview: View {
             guard let day = calendar.date(byAdding: .day, value: offset, to: startOfMonth)
             else { return nil }
             let isFuture = day > today
+            let isToday = calendar.isDateInToday(day)
             return HealthManager.DayStep(
                 label: labelFormatter.string(from: day),
                 dayNumber: dayNumberFormatter.string(from: day),
-                steps: isFuture ? 0 : Double.random(in: 3000...15000),
-                isToday: calendar.isDateInToday(day),
+                steps: isFuture ? 0 : Double.random(in: 4000...15000),
+                isToday: isToday,
                 isFuture: isFuture
             )
         }
@@ -118,8 +157,41 @@ private struct MonthlyStepsChartPreview: View {
 
     var body: some View {
         List {
+            // Standard view
             Section("This Month") {
                 MonthlyStepsChart(days: mockDays, goal: 10000)
+            }
+
+            // Low step days — tests red bars
+            Section("Low Activity Month") {
+                MonthlyStepsChart(
+                    days: mockDays.map { day in
+                        HealthManager.DayStep(
+                            label: day.label,
+                            dayNumber: day.dayNumber,
+                            steps: day.isFuture ? 0 : Double.random(in: 2000...6000),
+                            isToday: day.isToday,
+                            isFuture: day.isFuture
+                        )
+                    },
+                    goal: 10000
+                )
+            }
+
+            // High step days — tests green bars and Y axis scaling
+            Section("High Activity Month") {
+                MonthlyStepsChart(
+                    days: mockDays.map { day in
+                        HealthManager.DayStep(
+                            label: day.label,
+                            dayNumber: day.dayNumber,
+                            steps: day.isFuture ? 0 : Double.random(in: 12000...20000),
+                            isToday: day.isToday,
+                            isFuture: day.isFuture
+                        )
+                    },
+                    goal: 10000
+                )
             }
         }
     }

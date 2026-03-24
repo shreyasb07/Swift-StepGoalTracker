@@ -38,9 +38,8 @@ class LogFileWriter {
         guard !fileManager.fileExists(atPath: logsDirectory.path) else { return }
         do {
             try fileManager.createDirectory(at: logsDirectory, withIntermediateDirectories: true)
-            Logger.info("Logs directory created at \(logsDirectory.path)")
         } catch {
-            Logger.error("Failed to create logs directory: \(error.localizedDescription)")
+            print("LogFileWriter: Failed to create logs directory: \(error.localizedDescription)")
         }
     }
     

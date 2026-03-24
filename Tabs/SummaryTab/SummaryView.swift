@@ -18,7 +18,7 @@ struct SummaryView: View {
 
     // MARK: - Week Computed Properties
     private var weekNavigationTitle: String {
-        let calendar = Calendar.current
+        let calendar = Calendar.mondayFirst
         let today = calendar.startOfDay(for: Date())
         guard
             let targetDate = calendar.date(byAdding: .weekOfYear, value: weekOffset, to: today),

@@ -67,7 +67,7 @@ class HealthManager: ObservableObject {
         days: [Date],
         isCurrentPeriod: Bool
     ) async -> [DayStep] {
-        let calendar = Calendar.current
+        let calendar = Calendar.mondayFirst
         let today = calendar.startOfDay(for: Date())
         let endDate =
             isCurrentPeriod
@@ -229,12 +229,12 @@ class HealthManager: ObservableObject {
 
     //MARK: - Fetch Steps for current week
     func fetchWeeklySteps(goal: Double) async {
-        let calendar = Calendar.current
+        let calendar = Calendar.mondayFirst
         let today = calendar.startOfDay(for: Date())
 
         guard
             let startOfWeek = calendar.dateInterval(
-                of: .weekOfMonth,
+                of: .weekOfYear,
                 for: today
             )?.start
         else {
@@ -252,29 +252,47 @@ class HealthManager: ObservableObject {
             isCurrentPeriod: true
         )
         weeklySteps = built
+        
+        //Fetch last week's completed data for the report
+        if calendar.isDateInToday(today) && calendar.component(.weekday, from: today) == 2 { // 2 = Monday
+            //Its Monday, fetch last week report
+            guard
+                let lastWeekDate = calendar.date(byAdding: .weekOfYear, value: -1, to: today),
+                let lastWeekStart = calendar.dateInterval(of: .weekOfYear, for: lastWeekDate)?.start
+            else { return }
+            
+            let lastWeekDays : [Date] = (0..<7).compactMap {
+                calendar.date(byAdding: .day, value: $0, to: lastWeekStart)
+            }
+            let lastWeekBuilt = await fetchSteps(
+                        from: lastWeekStart,
+                        days: lastWeekDays,
+                        isCurrentPeriod: false
+                    )
+            //Schedule weekly report
+            let daysGoalHit = lastWeekBuilt.filter { !$0.isFuture && $0.steps >= goal }
+                .count
+            let activeDays = lastWeekBuilt.filter { !$0.isFuture && $0.steps > 0 }
+            let average =
+                activeDays.isEmpty
+                ? 0
+                : activeDays.map(\.steps).reduce(0, +) / Double(activeDays.count)
 
-        //Schedule weekly report
-        let daysGoalHit = built.filter { !$0.isFuture && $0.steps >= goal }
-            .count
-        let activeDays = built.filter { !$0.isFuture && $0.steps > 0 }
-        let average =
-            activeDays.isEmpty
-            ? 0
-            : activeDays.map(\.steps).reduce(0, +) / Double(activeDays.count)
-
-        NotificationManager.shared.scheduleWeeklyReport(
-            daysGoalHit: daysGoalHit,
-            averageSteps: average,
-            currentStreak: currentStreak,
-            previousStreak: previousStreak
-        )
-        previousStreak = currentStreak
+            NotificationManager.shared.scheduleWeeklyReport(
+                daysGoalHit: daysGoalHit,
+                averageSteps: average,
+                currentStreak: currentStreak,
+                previousStreak: previousStreak
+            )
+            previousStreak = currentStreak
+            Logger.success("Fetched current week steps")
+        }
         Logger.success("Fetched current week steps")
     }
 
     //MARK: - Fetch Selected Week
     func fetchSelectedWeek(offset: Int, goal: Double) async {
-        let calendar = Calendar.current
+        let calendar = Calendar.mondayFirst
         let today = calendar.startOfDay(for: Date())
 
         // Calculate start of the target week

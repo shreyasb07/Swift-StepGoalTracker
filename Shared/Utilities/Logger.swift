@@ -16,6 +16,8 @@ enum LogLevel: String {
 }
 
 struct Logger {
+    private static var isWriting = false  // ← guard against recursion
+    
     static func info(
         _ message: String,
         file: String = #file,
@@ -92,7 +94,10 @@ struct Logger {
         // File output — always, including release builds
         // so we can collect logs from real devices
         #if os(iOS)
+        guard !isWriting else { return }  // ← prevent recursive calls
+        isWriting = true
         LogFileWriter.shared.write(entry)
+        isWriting = false
         #endif
     }
 }

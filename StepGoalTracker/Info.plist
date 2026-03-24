@@ -2,6 +2,15 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIImageRespectsSafeAreaInsets</key>
+		<true/>
+		<key>UIColorName</key>
+		<string>LaunchBackground</string>
+		<key>UIImageName</key>
+		<string>AppIcon</string>
+	</dict>
 	<key>NSHealthShareUsageDescription</key>
 	<string>The app reads your step count to track your daily activity and help you reach your fitness goals.</string>
 	<key>NSHealthUpdateUsageDescription</key>

@@ -1,3 +1,4 @@
+import Foundation
 //
 //  MilestoneNotifications.swift
 //  StepGoalTracker
@@ -5,7 +6,6 @@
 //  Created by Shreyas Bhosale on 3/10/26.
 //
 import UIKit
-import Foundation
 import UserNotifications
 
 // MARK: - Milestone Notifications
@@ -48,14 +48,26 @@ extension NotificationManager {
         let percentage = Int((steps / goal) * 100)
         let milestones = [25, 50, 75, 100]
 
-        for milestone in milestones {
-            if percentage >= milestone && !firedMilestones.contains(milestone) {
-                sendMilestoneNotification(milestone: milestone, steps: steps)
-                firedMilestones.insert(milestone)
-            }
+        // Find the highest milestone the user has reached, that hasn't been fired yet
+        let reachedMilestones = milestones.filter { percentage >= $0 }
+        let unfiredMilestones = reachedMilestones.filter {
+            !firedMilestones.contains($0)
         }
+
+        guard let highestUnfired = unfiredMilestones.max() else { return }
+
+        // Mark ALL reached milestones as fired so we don't fire lower ones later
+        for milestone in reachedMilestones {
+            firedMilestones.insert(milestone)
+        }
+        // Only notify for the highest one
+        sendMilestoneNotification(milestone: highestUnfired, steps: steps)
+        Logger.info(
+            "Fired milestone: \(highestUnfired)% (skipped lower unfired milestones)"
+        )
+
     }
-    
+
     private func sendMilestoneNotification(milestone: Int, steps: Double) {
         let content = UNMutableNotificationContent()
         content.sound = .default
@@ -80,11 +92,12 @@ extension NotificationManager {
         // Attach the app icon as the notification image
         // Replace the Bundle.main.url approach with UIImage from assets
         if let image = UIImage(named: "AppIcon"),
-           let data = image.pngData() {
+            let data = image.pngData()
+        {
             let tempURL = FileManager.default.temporaryDirectory
                 .appendingPathComponent("AppIcon.png")
             try? data.write(to: tempURL)
-            do{
+            do {
                 let attachment = try UNNotificationAttachment(
                     identifier: "icon",
                     url: tempURL,
@@ -92,10 +105,12 @@ extension NotificationManager {
                 )
                 content.attachments = [attachment]
                 Logger.success("Notification attachment created successfully")
-            }catch {
-                Logger.error("Failed to create attachment: \(error.localizedDescription)")
+            } catch {
+                Logger.error(
+                    "Failed to create attachment: \(error.localizedDescription)"
+                )
             }
-            
+
         }
 
         let trigger = UNTimeIntervalNotificationTrigger(
