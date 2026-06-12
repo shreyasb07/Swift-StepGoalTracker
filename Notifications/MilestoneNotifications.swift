@@ -17,12 +17,12 @@ extension NotificationManager {
     private var firedMilestones: Set<Int> {
         get {
             let array =
-                UserDefaults.standard.array(forKey: milestonesKey) as? [Int]
+                UserDefaults.shared.array(forKey: milestonesKey) as? [Int]
                 ?? []
             return Set(array)
         }
         set {
-            UserDefaults.standard.set(Array(newValue), forKey: milestonesKey)
+            UserDefaults.shared.set(Array(newValue), forKey: milestonesKey)
         }
     }
 
@@ -30,12 +30,12 @@ extension NotificationManager {
         let today = Calendar.current.startOfDay(for: Date())
         let formatter = ISO8601DateFormatter()
         let lastFiredDate = formatter.date(
-            from: UserDefaults.standard.string(forKey: milestoneDateKey) ?? ""
+            from: UserDefaults.shared.string(forKey: milestoneDateKey) ?? ""
         ).map { Calendar.current.startOfDay(for: $0) }
 
         if lastFiredDate != today {
             firedMilestones = []
-            UserDefaults.standard.set(
+            UserDefaults.shared.set(
                 formatter.string(from: today),
                 forKey: milestoneDateKey
             )

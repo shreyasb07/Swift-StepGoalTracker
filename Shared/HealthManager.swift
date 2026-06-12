@@ -10,6 +10,7 @@ class HealthManager: ObservableObject {
 
     struct DayStep: Identifiable, Equatable {
         let id = UUID()
+        let date: Date
         let label: String
         let dayNumber: String
         let steps: Double
@@ -18,7 +19,9 @@ class HealthManager: ObservableObject {
     }
 
     private var anchoredQuery: HKAnchoredObjectQuery?
+    private var observerQuery: HKObserverQuery?
     let healthStore = HKHealthStore()
+    
     //Week
     @Published var weeklySteps: [DayStep] = []
     @Published var selectedWeekSteps: [DayStep] = []
@@ -28,11 +31,17 @@ class HealthManager: ObservableObject {
     @Published var selectedMonthOffset: Int = 0
     @Published var stepCount: Double = 3000
 
-    @AppStorage("currentStreak") var currentStreak: Int = 0
-    @AppStorage("bestStreak") var bestStreak: Int = 0
-    @AppStorage("lastGoalMetDate") var lastGoalMetDateString: String = ""
+    @AppStorage(AppGroupConstants.currentStreakKey, store: .shared) var currentStreak: Int = 0
+    @AppStorage(AppGroupConstants.bestStreakKey, store: .shared) var bestStreak: Int = 0
 
-    @AppStorage("previousStreak") var previousStreak: Int = 0
+    @AppStorage(AppGroupConstants.previousStreakKey, store: .shared) var previousStreak: Int = 0
+    
+    @Published var lastBackgroundRefresh: Date? {
+        didSet {
+            // Persist it so we can see it across app kills
+            UserDefaults.shared.set(lastBackgroundRefresh, forKey: "last_bg_refresh")
+        }
+    }
 
     //MARK: - HealthKit Helpers
 
@@ -53,12 +62,25 @@ class HealthManager: ObservableObject {
         result?.statistics(for: day)?.sumQuantity()?.doubleValue(for: .count())
             ?? 0
     }
-    
+
     private static let dayNumberFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "d"  // "1", "2"... "31"
         return formatter
     }()
+    
+    private func generateDateRange(from start: Date, to end: Date) -> [Date] {
+        var dates: [Date] = []
+        var current = start
+        let calendar = Calendar.mondayFirst
+        
+        while current <= end {
+            dates.append(current)
+            guard let next = calendar.date(byAdding: .day, value: 1, to: current) else { break }
+            current = next
+        }
+        return dates
+    }
 
     //MARK: - Weekly steps core query
     //Single Shared Helper - both fetchWeeklySteps and fetchSelectedWeek can use this
@@ -71,7 +93,9 @@ class HealthManager: ObservableObject {
         let today = calendar.startOfDay(for: Date())
         let endDate =
             isCurrentPeriod
-        ? Date() : calendar.date(byAdding: .day, value: days.count, to: startDate) ?? startDate
+            ? Date()
+            : calendar.date(byAdding: .day, value: days.count, to: startDate)
+                ?? startDate
 
         let query = HKStatisticsCollectionQuery(
             quantityType: stepType(),
@@ -85,8 +109,8 @@ class HealthManager: ObservableObject {
         formatter.dateFormat = "EEE"
 
         return await withCheckedContinuation { continuation in
-            query.initialResultsHandler = { [weak self] _, results, _ in
-                guard let self, let results else {
+            query.initialResultsHandler = { _, results, _ in
+                guard let results else {
                     continuation.resume(returning: [])
                     return
                 }
@@ -108,8 +132,11 @@ class HealthManager: ObservableObject {
                     for rawStep in rawSteps {
                         built.append(
                             DayStep(
+                                date: rawStep.date,
                                 label: formatter.string(from: rawStep.date),
-                                dayNumber: Self.dayNumberFormatter.string(from: rawStep.date),
+                                dayNumber: Self.dayNumberFormatter.string(
+                                    from: rawStep.date
+                                ),
                                 steps: rawStep.steps,
                                 isToday: calendar.isDateInToday(rawStep.date),
                                 isFuture: rawStep.date > today
@@ -125,6 +152,7 @@ class HealthManager: ObservableObject {
     }
 
     func requestAuthorization(goal: Double) {
+        self.migrateOldStreakData()
         let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount)!
         healthStore.requestAuthorization(toShare: [], read: [stepType]) {
             success,
@@ -150,7 +178,8 @@ class HealthManager: ObservableObject {
     }
 
     func startAnchoredQuery(goal: Double) {
-        let startOfDay = Calendar.current.startOfDay(for: Date())
+        let calendar = Calendar.mondayFirst
+        let startOfDay = calendar.startOfDay(for: Date())
 
         let query = HKAnchoredObjectQuery(
             type: stepType(),
@@ -182,9 +211,9 @@ class HealthManager: ObservableObject {
         self.anchoredQuery = query
         healthStore.execute(query)
 
-        #if os(watchOS)
+//        #if os(watchOS)
             startObserverQuery(goal: goal)
-        #endif
+//        #endif
     }
 
     func stopAnchoredQuery() {
@@ -192,13 +221,14 @@ class HealthManager: ObservableObject {
             healthStore.stop(query)
             anchoredQuery = nil
         }
-        #if os(watchOS)
+//        #if os(watchOS)
             stopObserverQuery()
-        #endif
+//        #endif
     }
 
     func fetchTodaySteps(goal: Double) async {
-        let startOfDay = Calendar.current.startOfDay(for: Date())
+        let calendar = Calendar.mondayFirst
+        let startOfDay = calendar.startOfDay(for: Date())
 
         await withCheckedContinuation { continuation in
             let query = HKStatisticsQuery(
@@ -214,7 +244,23 @@ class HealthManager: ObservableObject {
                     result?.sumQuantity()?.doubleValue(for: HKUnit.count()) ?? 0
                 Task { @MainActor in
                     self.stepCount = steps
-                    self.updateStreak(steps: steps, goal: goal)
+                    // 1. Update the local "Today" entry in your array if it exists
+                    // This ensures refreshStreak sees the latest number immediately
+                    if let index = self.selectedMonthlySteps.firstIndex(where: {
+                        calendar.isDateInToday($0.date)
+                    }) {
+                        let oldDay = self.selectedMonthlySteps[index]
+                        self.selectedMonthlySteps[index] = DayStep(
+                            date: oldDay.date,
+                            label: oldDay.label,
+                            dayNumber: oldDay.dayNumber,
+                            steps: steps,
+                            isToday: true,
+                            isFuture: false
+                        )
+                    }
+                    await self.refreshStreak(goal: goal)
+                    
                     NotificationManager.shared.checkAndSendMilestone(
                         steps: steps,
                         goal: goal
@@ -224,7 +270,6 @@ class HealthManager: ObservableObject {
             }
             healthStore.execute(query)
         }
-
     }
 
     //MARK: - Fetch Steps for current week
@@ -252,41 +297,6 @@ class HealthManager: ObservableObject {
             isCurrentPeriod: true
         )
         weeklySteps = built
-        
-        //Fetch last week's completed data for the report
-        if calendar.isDateInToday(today) && calendar.component(.weekday, from: today) == 2 { // 2 = Monday
-            //Its Monday, fetch last week report
-            guard
-                let lastWeekDate = calendar.date(byAdding: .weekOfYear, value: -1, to: today),
-                let lastWeekStart = calendar.dateInterval(of: .weekOfYear, for: lastWeekDate)?.start
-            else { return }
-            
-            let lastWeekDays : [Date] = (0..<7).compactMap {
-                calendar.date(byAdding: .day, value: $0, to: lastWeekStart)
-            }
-            let lastWeekBuilt = await fetchSteps(
-                        from: lastWeekStart,
-                        days: lastWeekDays,
-                        isCurrentPeriod: false
-                    )
-            //Schedule weekly report
-            let daysGoalHit = lastWeekBuilt.filter { !$0.isFuture && $0.steps >= goal }
-                .count
-            let activeDays = lastWeekBuilt.filter { !$0.isFuture && $0.steps > 0 }
-            let average =
-                activeDays.isEmpty
-                ? 0
-                : activeDays.map(\.steps).reduce(0, +) / Double(activeDays.count)
-
-            NotificationManager.shared.scheduleWeeklyReport(
-                daysGoalHit: daysGoalHit,
-                averageSteps: average,
-                currentStreak: currentStreak,
-                previousStreak: previousStreak
-            )
-            previousStreak = currentStreak
-            Logger.success("Fetched current week steps")
-        }
         Logger.success("Fetched current week steps")
     }
 
@@ -326,7 +336,7 @@ class HealthManager: ObservableObject {
     }
 
     func fetchSelectedMonth(offset: Int, goal: Double) async {
-        let calendar = Calendar.current
+        let calendar = Calendar.mondayFirst
         let today = calendar.startOfDay(for: Date())
 
         guard
@@ -360,42 +370,120 @@ class HealthManager: ObservableObject {
         )
         selectedMonthlySteps = built
         selectedMonthOffset = offset
+        if offset == 0 {
+            await self.refreshStreak(goal: goal)
+        }
         Logger.success("Fetched month data for offset: \(offset)")
     }
 
-    func updateStreak(steps: Double, goal: Double) {
-        guard steps >= goal else { return }
+    func refreshStreak(goal: Double) async {
+        Logger.info("Calling refresh Streak")
+        let calendar = Calendar.mondayFirst
+        let today = calendar.startOfDay(for: Date())
+        
+        // ─── GUARANTEED KEY MIGRATION INTERCEPTOR ─────────────────────────
+        let defaults = UserDefaults.shared
+        if let oldBest = defaults.value(forKey: "bestStreak") as? Int {
+                Logger.info("Found legacy 'bestStreak' data: \(oldBest) days. Rescuing record...")
+                
+                // Push the true historical record directly to the MainActor state
+                await MainActor.run {
+                    // This updates both the runtime property and your new App Group key
+                    self.bestStreak = max(oldBest, self.bestStreak)
+                }
+                
+                // Wipe out the old key name so this migration block runs EXACTLY ONCE
+                defaults.removeObject(forKey: "bestStreak")
+                Logger.success("🎉 Safely restored your true historical Best Streak of \(oldBest) days!")
+            }
+            
+            // Clean up legacy current streak key name if it lingers
+            if let oldCurrent = defaults.value(forKey: "currentStreak") as? Int {
+                defaults.removeObject(forKey: "currentStreak")
+            }
 
-        let formatter = ISO8601DateFormatter()
-        let today = Calendar.current.startOfDay(for: Date())
-        let yesterday = Calendar.current.date(
-            byAdding: .day,
-            value: -1,
-            to: today
-        )!
-        let lastDate = formatter.date(from: lastGoalMetDateString)
-            .map { Calendar.current.startOfDay(for: $0) }
+        // Step 1 — Find the streak start using exponential backoff
+        // Fetch increasingly large windows until we find a miss
+        var windowSize = 30
+        var streakStartDate: Date? = nil
 
-        let newStreak: Int
-        if lastDate == today {
-            newStreak = currentStreak
-            // Already counted today, do nothing
-        } else if lastDate == yesterday {
-            // Continuing streak from yesterday
-            newStreak = currentStreak + 1
-        } else {
-            // No previous streak or gap in days
-            newStreak = 1
+        while true {
+            guard let windowStart = calendar.date(
+                byAdding: .day,
+                value: -windowSize,
+                to: today
+            ) else { break }
+
+            let days = generateDateRange(from: windowStart, to: today)
+            let fetched = await fetchSteps(
+                from: windowStart,
+                days: days,
+                isCurrentPeriod: true
+            )
+
+            // Find the earliest miss in this window
+            let sortedDays = fetched
+                .filter { !$0.isFuture }
+                .sorted { $0.date < $1.date }
+
+            // Find first day where goal was NOT met
+            let missIndex = sortedDays.lastIndex { $0.steps < goal && !calendar.isDateInToday($0.date) }
+
+            if let missIndex {
+                // Found a miss inside this window
+                // Streak starts the day after the miss
+                streakStartDate = calendar.date(
+                    byAdding: .day,
+                    value: 1,
+                    to: calendar.startOfDay(for: sortedDays[missIndex].date)
+                )
+                Logger.info("Found streak start: \(String(describing: streakStartDate)) after miss on \(sortedDays[missIndex].date)")
+                break
+            } else {
+                // No miss found in this window — go back further
+                if windowSize > 1825 { // 5 year safety cap
+                    Logger.warning("No streak break found in 5 years — using window start")
+                    streakStartDate = windowStart
+                    break
+                }
+                windowSize *= 2  // Double the window: 30 → 60 → 120 → 240...
+                Logger.info("No miss found in \(windowSize / 2) days — expanding to \(windowSize) days")
+            }
         }
 
-        currentStreak = newStreak
-        bestStreak = max(bestStreak, newStreak)
-        lastGoalMetDateString = formatter.string(from: today)
+        guard let startDate = streakStartDate else {
+            Logger.error("Could not determine streak start date")
+            return
+        }
 
+        // Step 2 — Count days from streak start to today
+        // We already have this data from the last fetch — just count
+        let days = generateDateRange(from: startDate, to: today)
+        let streakDays = await fetchSteps(
+            from: startDate,
+            days: days,
+            isCurrentPeriod: true
+        )
+
+        let count = streakDays.filter {
+            !$0.isFuture &&
+            ($0.steps >= goal || calendar.isDateInToday($0.date))
+        }.count
+
+        Logger.info("Streak count: \(count) days from \(startDate) to \(today)")
+
+        await MainActor.run {
+            if self.currentStreak != count {
+                self.previousStreak = self.currentStreak
+            }
+            self.currentStreak = count
+            if count > self.bestStreak {
+                self.bestStreak = count
+            }
+        }
     }
 
-    #if os(watchOS)
-        private var observerQuery: HKObserverQuery?
+//    #if os(watchOS)
 
         func startObserverQuery(goal: Double) {
             let stepType = HKQuantityType.quantityType(
@@ -409,8 +497,11 @@ class HealthManager: ObservableObject {
                     completionHandler()
                     return
                 }
-                Task { await self?.fetchTodaySteps(goal: goal) }
-                completionHandler()
+                Task {
+                    await self?.fetchTodaySteps(goal: goal)
+                    completionHandler()
+                }
+                
             }
 
             observerQuery = query
@@ -423,6 +514,37 @@ class HealthManager: ObservableObject {
                 observerQuery = nil
             }
         }
-    #endif  // os(watchOS)
+//    #endif  // os(watchOS)
 
+    func migrateOldStreakData() {
+        // 1. Access standard UserDefaults (where the old keys lived)
+        let standardDefaults = UserDefaults.standard
+        
+        // 2. Access your App Group suite container
+        let sharedDefaults = UserDefaults.shared // Using your fixed shared extension
+        
+        // 3. Migrate Best Streak if it exists under the old key
+        if let oldBest = standardDefaults.value(forKey: "bestStreak") as? Int {
+            let currentSharedBest = sharedDefaults.integer(forKey: AppGroupConstants.bestStreakKey)
+            
+            // Only migrate if the old record is higher than what's currently in the shared slot
+            if oldBest > currentSharedBest {
+                sharedDefaults.set(oldBest, forKey: AppGroupConstants.bestStreakKey)
+                Logger.success("Migrated bestStreak (\(oldBest) days) to App Group container.")
+            }
+            
+            // Clean up the old key so this only runs once
+            standardDefaults.removeObject(forKey: "bestStreak")
+        }
+        
+        // 4. Migrate Current Streak just in case
+        if let oldCurrent = standardDefaults.value(forKey: "currentStreak") as? Int {
+            if sharedDefaults.value(forKey: AppGroupConstants.currentStreakKey) == nil {
+                sharedDefaults.set(oldCurrent, forKey: AppGroupConstants.currentStreakKey)
+                Logger.success("Migrated currentStreak (\(oldCurrent) days) to App Group container.")
+            }
+            standardDefaults.removeObject(forKey: "currentStreak")
+        }
+    }
 }
+

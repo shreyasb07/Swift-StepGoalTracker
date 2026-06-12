@@ -12,6 +12,7 @@ struct HomeView: View {
     @ObservedObject var health: HealthManager
 
     @State private var shareImage: UIImage? = nil
+    @State private var showStreakCalendar = false
 
     private var motivationalText: String {
         let percentage = Int((health.stepCount / connector.stepGoal) * 100)
@@ -82,7 +83,7 @@ struct HomeView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 12)
                 }
-                
+
                 // MARK: - Milestone section
                 Section("Today's Milestones") {
                     MilestoneProgressRow(
@@ -160,40 +161,81 @@ struct HomeView: View {
                 }
             }
             .navigationTitle(greeting)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Group {
-                        if let image = shareImage {
-                            ShareLink(
-                                item: Image(uiImage: image),
-                                preview: SharePreview(
-                                    "My step Progress",
-                                    image: Image(uiImage: image)
-                                )
-                            ) {
-                                Image(systemName: "square.and.arrow.up")
-                            }
-                        } else {
-                            ProgressView()
-                                .scaleEffect(0.8)
-                        }
-                    }
-
-                }
-            }
+            .toolbar { trailingToolbarItems }
             .refreshable {
+                await health.fetchSelectedMonth(offset: 0, goal: connector.stepGoal)
                 await health.fetchTodaySteps(goal: connector.stepGoal)
             }
             .onAppear {
-                Task { await renderShareImage()}
+                setupData()
             }
             .onChange(of: health.stepCount) { _, _ in
-                Task { await renderShareImage() }
+                updateShareImage()
             }
             .onChange(of: connector.stepGoal) { _, _ in
-                Task { await renderShareImage() }
+                updateShareImage()
             }
         }
+    }
+    @ToolbarContentBuilder
+    private var trailingToolbarItems: some ToolbarContent {
+        ToolbarItemGroup(placement: .navigationBarTrailing) {
+            //                    Group {
+            if let image = shareImage {
+                ShareLink(
+                    item: Image(uiImage: image),
+                    preview: SharePreview(
+                        "My step Progress",
+                        image: Image(uiImage: image)
+                    )
+                ) {
+                    Image(systemName: "square.and.arrow.up")
+                }
+            } else {
+                ProgressView()
+                    .scaleEffect(0.8)
+            }
+            Button {
+                showStreakCalendar = true
+            } label: {
+                Image(systemName: "flame.fill")
+                    .foregroundStyle(Color.motivationText)
+            }
+            .popover(
+                isPresented: $showStreakCalendar,
+                attachmentAnchor: .point(.bottom),
+                arrowEdge: .top
+            ) {
+                calendarPopover
+            }
+            //                    }
+
+        }
+    }
+    private var calendarPopover: some View {
+        StreakCalendarView(
+            goal: connector.stepGoal,
+            currentStreak: health.currentStreak,
+            bestStreak: health.bestStreak,
+            isPresented: $showStreakCalendar,
+            health: health,
+            connector: connector
+        )
+        .presentationCompactAdaptation(.popover)
+        .frame(minWidth: 320)
+    }
+
+    // Helper methods to keep the body clean
+    private func setupData() {
+        Task {
+            await health.fetchSelectedMonth(offset: 0, goal: connector.stepGoal)
+            await health.fetchTodaySteps(goal: connector.stepGoal)
+            await renderShareImage()
+        }
+    }
+
+    private func updateShareImage() {
+        Task { await renderShareImage() }
     }
 }
 

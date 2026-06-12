@@ -10,11 +10,13 @@ import SwiftUI
 struct SummaryView: View {
     @ObservedObject var connector: PhoneConnector
     @ObservedObject var health: HealthManager
-
+    var initialWeekOffset: Int = 0
+    
     @State private var shareImage: UIImage? = nil
     @State private var weekOffset: Int = 0
     @State private var monthOffset: Int = 0
     @State private var selectedPeriod: SummaryPeriod = .week
+
 
     // MARK: - Week Computed Properties
     private var weekNavigationTitle: String {
@@ -243,7 +245,7 @@ struct SummaryView: View {
             .navigationTitle("Summary")
             .toolbar { toolbarContent }
             .onAppear {
-                weekOffset = 0
+                weekOffset = initialWeekOffset
                 monthOffset = 0
                 Task {
                     await health.fetchSelectedWeek(offset: 0, goal: connector.stepGoal)
@@ -272,5 +274,5 @@ struct SummaryView: View {
 }
 
 #Preview {
-    SummaryView(connector: PhoneConnector(), health: HealthManager())
+    SummaryView(connector: PhoneConnector(), health: HealthManager(), initialWeekOffset: 0)
 }

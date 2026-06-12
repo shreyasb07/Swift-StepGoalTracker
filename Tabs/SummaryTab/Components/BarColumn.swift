@@ -43,13 +43,7 @@ struct BarColumn: View {
         HStack(alignment: .bottom, spacing: 6) {
             // Goal hit
             BarColumn(
-                day: HealthManager.DayStep(
-                    label: "Mon",
-                    dayNumber: "1",
-                    steps: 11200,
-                    isToday: false,
-                    isFuture: false
-                ),
+                day: .mock(label: "Mon", day: 1, steps: 11200),
                 isMaxDay: false,
                 barColor: .green,
                 heightRatio: 0.85
@@ -58,13 +52,7 @@ struct BarColumn: View {
 
             // Today, in progress
             BarColumn(
-                day: HealthManager.DayStep(
-                    label: "Tue",
-                    dayNumber: "2",
-                    steps: 7500,
-                    isToday: true,
-                    isFuture: false
-                ),
+                day: .mock(label: "Tue", day: 2, steps: 7500),
                 isMaxDay: false,
                 barColor: .blue.opacity(0.6),
                 heightRatio: 0.55
@@ -72,13 +60,7 @@ struct BarColumn: View {
 
             // Past day, goal missed
             BarColumn(
-                day: HealthManager.DayStep(
-                    label: "Wed",
-                    dayNumber: "3",
-                    steps: 4100,
-                    isToday: false,
-                    isFuture: false
-                ),
+                day: .mock(label: "Wed", day: 3, steps: 4100),
                 isMaxDay: false,
                 barColor: .red.opacity(0.3),
                 heightRatio: 0.3
@@ -86,13 +68,7 @@ struct BarColumn: View {
 
             // Zero steps
             BarColumn(
-                day: HealthManager.DayStep(
-                    label: "Thu",
-                    dayNumber: "4",
-                    steps: 0,
-                    isToday: false,
-                    isFuture: false
-                ),
+                day: .mock(label: "Thu", day: 4, steps: 0),
                 isMaxDay: false,
                 barColor: .red.opacity(0.3),
                 heightRatio: 0
@@ -100,13 +76,7 @@ struct BarColumn: View {
 
             // Future day
             BarColumn(
-                day: HealthManager.DayStep(
-                    label: "Fri",
-                    dayNumber: "5",
-                    steps: 0,
-                    isToday: false,
-                    isFuture: true
-                ),
+                day: .mock(label: "Fri", day: 5, steps: 0, isFuture: true),
                 isMaxDay: false,
                 barColor: .clear,
                 heightRatio: 0

@@ -75,19 +75,19 @@ struct WeeklyStepsChart: View {
 }
 
 #Preview {
-    let mockDays: [HealthManager.DayStep] = [
-        .init(label: "Mon", dayNumber: "1", steps: 6200, isToday: false, isFuture: false),
-        .init(label: "Tue", dayNumber: "2", steps: 9800, isToday: false, isFuture: false),
-        .init(label: "Wed", dayNumber: "3", steps: 4100, isToday: false, isFuture: false),
-        .init(label: "Thu", dayNumber: "4", steps: 11200, isToday: false, isFuture: false),
-        .init(label: "Fri", dayNumber: "5", steps: 0, isToday: false, isFuture: false),
-        .init(label: "Sat", dayNumber: "6", steps: 3300, isToday: false, isFuture: false),
-        .init(label: "Sun", dayNumber: "7", steps: 8000, isToday: true, isFuture: false),
-        .init(label: "Mon", dayNumber: "8", steps: 0, isToday: false, isFuture: true),
+    let mockWeek : [HealthManager.DayStep] = [
+            .mock(label: "Mon", day: 1, steps: 6200),
+            .mock(label: "Tue", day: 2, steps: 9800),
+            .mock(label: "Wed", day: 3, steps: 4100),
+            .mock(label: "Thu", day: 4, steps: 11200),
+            .mock(label: "Fri", day: 5, steps: 0),
+            .mock(label: "Sat", day: 6, steps: 3300),
+            .mock(label: "Sun", day: 7, steps: 8000, isToday: true),
+            .mock(label: "Mon", day: 8, steps: 0, isFuture: true)
     ]
     List {
         Section("This Week") {
-            WeeklyStepsChart(days: mockDays, goal: 8000)
+            WeeklyStepsChart(days: mockWeek, goal: 8000)
         }
     }
 }

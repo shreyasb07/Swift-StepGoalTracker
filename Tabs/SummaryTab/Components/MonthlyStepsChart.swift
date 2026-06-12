@@ -146,6 +146,7 @@ private struct MonthlyStepsChartPreview: View {
             let isFuture = day > today
             let isToday = calendar.isDateInToday(day)
             return HealthManager.DayStep(
+                date: day,
                 label: labelFormatter.string(from: day),
                 dayNumber: dayNumberFormatter.string(from: day),
                 steps: isFuture ? 0 : Double.random(in: 4000...15000),
@@ -167,6 +168,7 @@ private struct MonthlyStepsChartPreview: View {
                 MonthlyStepsChart(
                     days: mockDays.map { day in
                         HealthManager.DayStep(
+                            date: day.date,
                             label: day.label,
                             dayNumber: day.dayNumber,
                             steps: day.isFuture ? 0 : Double.random(in: 2000...6000),
@@ -183,6 +185,7 @@ private struct MonthlyStepsChartPreview: View {
                 MonthlyStepsChart(
                     days: mockDays.map { day in
                         HealthManager.DayStep(
+                            date: day.date,
                             label: day.label,
                             dayNumber: day.dayNumber,
                             steps: day.isFuture ? 0 : Double.random(in: 12000...20000),

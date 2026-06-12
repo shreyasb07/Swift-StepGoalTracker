@@ -173,18 +173,30 @@ struct ShareableChartCard: View {
 }
 
 #Preview {
+    let mockWeek : [HealthManager.DayStep] = [
+            .mock(label: "Mon", day: 1, steps: 6200),
+            .mock(label: "Tue", day: 2, steps: 9800),
+            .mock(label: "Wed", day: 3, steps: 4100),
+            .mock(label: "Thu", day: 4, steps: 11200),
+            .mock(label: "Fri", day: 5, steps: 0),
+            .mock(label: "Sat", day: 6, steps: 3300),
+            .mock(label: "Sun", day: 7, steps: 8000, isToday: true),
+            .mock(label: "Mon", day: 8, steps: 0, isFuture: true)
+    ]
+    let filteredWeek = mockWeek.filter { !$0.isFuture }
+    // 2. Define the month data separately
+        let pastMonth = (1...21).map { day in
+            HealthManager.DayStep.mock(label: "M", day: day, steps: Double.random(in: 4000...14000), isToday: day == 21)
+        }
+    let futureMonth = (22...31).map { day in
+            HealthManager.DayStep.mock(label: "M", day: day, steps: 0, isFuture: true)
+        }
+    let fullMonth = pastMonth + futureMonth
+    
     VStack(spacing: 20) {
         // Week preview
         ShareableChartCard(
-            days: [
-                .init(label: "Mon", dayNumber: "1", steps: 6200, isToday: false, isFuture: false),
-                .init(label: "Tue", dayNumber: "2", steps: 9800, isToday: false, isFuture: false),
-                .init(label: "Wed", dayNumber: "3", steps: 4100, isToday: false, isFuture: false),
-                .init(label: "Thu", dayNumber: "4", steps: 11200, isToday: false, isFuture: false),
-                .init(label: "Fri", dayNumber: "5", steps: 0, isToday: false, isFuture: false),
-                .init(label: "Sat", dayNumber: "6", steps: 3300, isToday: false, isFuture: false),
-                .init(label: "Sun", dayNumber: "7", steps: 8000, isToday: true, isFuture: false),
-            ],
+            days: filteredWeek,
             goal: 10000,
             currentStreak: 5,
             period: .week
@@ -192,23 +204,7 @@ struct ShareableChartCard: View {
 
         // Month preview
         ShareableChartCard(
-            days: (1...21).map { day in
-                HealthManager.DayStep(
-                    label: "Mon",
-                    dayNumber: "\(day)",
-                    steps: Double.random(in: 4000...14000),
-                    isToday: day == 21,
-                    isFuture: false
-                )
-            } + (22...31).map { day in
-                HealthManager.DayStep(
-                    label: "Mon",
-                    dayNumber: "\(day)",
-                    steps: 0,
-                    isToday: false,
-                    isFuture: true
-                )
-            },
+            days: fullMonth,
             goal: 10000,
             currentStreak: 5,
             period: .month

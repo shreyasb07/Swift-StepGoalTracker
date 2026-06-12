@@ -10,7 +10,7 @@ import WatchConnectivity
 import SwiftUI
 
 class PhoneConnector: NSObject, WCSessionDelegate, ObservableObject {
-    @AppStorage("stepGoal") var stepGoal: Double = 10000
+    @AppStorage(AppGroupConstants.step_goal_key, store: UserDefaults(suiteName: AppGroupConstants.suiteName)) var stepGoal: Double = 10000
     
     override init() {
         super.init()
@@ -21,13 +21,19 @@ class PhoneConnector: NSObject, WCSessionDelegate, ObservableObject {
     }
 
     func updateGoal(newGoal: Double) {
-//        self.stepGoal = newGoal
-        let dict = ["stepGoal": newGoal]
-        try? WCSession.default.updateApplicationContext(dict)
+        self.stepGoal = newGoal
+        let dict = [AppGroupConstants.step_goal_key: newGoal]
+        do {
+            try WCSession.default.updateApplicationContext(dict)
+            Logger.success("Synced new goal to Watch: \(newGoal)")
+        }catch {
+            Logger.error("Failed to sync goal to Watch: \(error.localizedDescription)")
+        }
+        
     }
 
     func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String : Any]) {
-        if let goal = applicationContext["stepGoal"] as? Double {
+        if let goal = applicationContext[AppGroupConstants.step_goal_key] as? Double {
             DispatchQueue.main.async {
                 self.stepGoal = goal
             }

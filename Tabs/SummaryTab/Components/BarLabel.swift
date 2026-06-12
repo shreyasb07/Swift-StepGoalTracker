@@ -27,52 +27,28 @@ struct BarLabel: View {
     VStack(spacing: 20) {
             // Today's label
             BarLabel(
-                day: HealthManager.DayStep(
-                    label: "Mon",
-                    dayNumber: "1",
-                    steps: 9521,
-                    isToday: true,
-                    isFuture: false,
-                ),
+                day: .mock(label: "Mon", day: 1, steps: 11200),
                 isMaxDay: false,
                 useDayNumber: true,
             )
 
             // Max day label
             BarLabel(
-                day: HealthManager.DayStep(
-                    label: "Tue",
-                    dayNumber: "2",
-                    steps: 13488,
-                    isToday: false,
-                    isFuture: false
-                ),
+                day: .mock(label: "Tue", day: 2, steps: 13488),
                 isMaxDay: true,
                 useDayNumber: true
             )
 
             // Regular day — should show nothing
             BarLabel(
-                day: HealthManager.DayStep(
-                    label: "Wed",
-                    dayNumber: "3",
-                    steps: 6200,
-                    isToday: false,
-                    isFuture: false
-                ),
+                day: .mock(label: "Wed", day: 3, steps: 6200),
                 isMaxDay: false,
                 useDayNumber: true
             )
 
             // Future day — should show nothing
             BarLabel(
-                day: HealthManager.DayStep(
-                    label: "Thu",
-                    dayNumber: "4",
-                    steps: 0,
-                    isToday: false,
-                    isFuture: true
-                ),
+                day: .mock(label: "Thu", day: 4, steps: 0),
                 isMaxDay: false,
                 useDayNumber: true
 

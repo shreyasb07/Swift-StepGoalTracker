@@ -187,10 +187,10 @@ struct SettingsView: View {
                         titleVisibility: .visible
                     ) {
                         Button("Reset", role: .destructive) {
-                            UserDefaults.standard.removeObject(
+                            UserDefaults.shared.removeObject(
                                 forKey: "firedMilestonesToday"
                             )
-                            UserDefaults.standard.removeObject(
+                            UserDefaults.shared.removeObject(
                                 forKey: "milestoneFiredDate"
                             )
                             Logger.info("Milestones reset")
@@ -210,13 +210,13 @@ struct SettingsView: View {
                         titleVisibility: .visible
                     ) {
                         Button("Reset", role: .destructive) {
-                            UserDefaults.standard.removeObject(
+                            UserDefaults.shared.removeObject(
                                 forKey: "currentStreak"
                             )
-                            UserDefaults.standard.removeObject(
+                            UserDefaults.shared.removeObject(
                                 forKey: "bestStreak"
                             )
-                            UserDefaults.standard.removeObject(
+                            UserDefaults.shared.removeObject(
                                 forKey: "lastGoalMetDate"
                             )
                         }
@@ -232,17 +232,37 @@ struct SettingsView: View {
                     Section("Debug") {
                         Button("Print Milestone State") {
                             let fired =
-                                UserDefaults.standard.array(
+                                UserDefaults.shared.array(
                                     forKey: "firedMilestonesToday"
                                 ) ?? []
                             let date =
-                                UserDefaults.standard.string(
+                                UserDefaults.shared.string(
                                     forKey: "milestoneFiredDate"
                                 ) ?? "none"
                             Logger.info("Fired milestones: \(fired)")
                             Logger.info("Milestone date: \(date)")
                         }
                         .foregroundStyle(.blue)
+                        Button(action: {
+//                                            NotificationManager.shared.scheduleDebugWeeklyReport()
+                            NotificationManager.shared.previewAndScheduleWeeklyReport(goal: connector.stepGoal, healthManager: health)
+                                        }) {
+                                            Label("Trigger Weekly Report Demo", systemImage: "bell.badge.fill")
+                                        }
+                                        .foregroundColor(.red)
+                                        
+                                        Text("Tap this, then immediately lock your phone or go to the Home Screen. The notification will arrive in 5 seconds.")
+                                            .font(.caption)
+                                            .foregroundColor(.gray)
+                        Button("Simulate Weekly Report Tap") {
+                            print("Simulate button tapped — setting tappedNotificationType")
+                                NotificationManager.shared.tappedNotificationType = .weeklyReport
+                            }
+                            .foregroundStyle(.orange)
+
+                            Text("Simulates tapping the weekly report notification — should switch to Summary tab showing Last Week.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                     }
                 #endif
                 // MARK: - Diagnostics

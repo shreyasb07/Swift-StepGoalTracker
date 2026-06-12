@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B14517AF2F6747B3003FAC81 /* ZipArchive in Frameworks */ = {isa = PBXBuildFile; productRef = B14517AE2F6747B3003FAC81 /* ZipArchive */; settings = {ATTRIBUTES = (Required, ); }; };
+		B145186C2F738B60003FAC81 /* StepGoalNotificationService.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B14518652F738B60003FAC81 /* StepGoalNotificationService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B1CF3F262F31A3B3009CFBB5 /* StepGoalTrackerWatch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = B1CF3F192F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -19,9 +20,27 @@
 			remoteGlobalIDString = B1CF3F182F31A3B0009CFBB5;
 			remoteInfo = "StepGoalTrackerWatch Watch App";
 		};
+		B145186A2F738B60003FAC81 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B1CF3EF62F319F6D009CFBB5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B14518642F738B60003FAC81;
+			remoteInfo = StepGoalNotificationService;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		B14518712F738B60003FAC81 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				B145186C2F738B60003FAC81 /* StepGoalNotificationService.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B1CF3F2A2F31A3B3009CFBB5 /* Embed Watch Content */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -36,6 +55,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B14518652F738B60003FAC81 /* StepGoalNotificationService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = StepGoalNotificationService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1CF3EFE2F319F6D009CFBB5 /* StepGoalTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StepGoalTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1CF3F192F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "StepGoalTrackerWatch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -45,6 +65,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				HomeTab/Components/ShareableRingCard.swift,
+				HomeTab/Components/StreakCalendarView.swift,
 				HomeTab/HomeView.swift,
 				SettingsTab/SettingsView.swift,
 				SummaryTab/Components/BarColumn.swift,
@@ -78,6 +99,35 @@
 			);
 			target = B1CF3F182F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App */;
 		};
+		B14518702F738B60003FAC81 /* Exceptions for "StepGoalNotificationService" folder in "StepGoalNotificationService" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = B14518642F738B60003FAC81 /* StepGoalNotificationService */;
+		};
+		B14518762F756810003FAC81 /* Exceptions for "Shared" folder in "StepGoalNotificationService" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				AppGroupConstants.swift,
+			);
+			target = B14518642F738B60003FAC81 /* StepGoalNotificationService */;
+		};
+		B14518852F75E7EB003FAC81 /* Exceptions for "Utilities" folder in "StepGoalNotificationService" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Calendar+Extensions.swift",
+				"UserDefaults+Extension.swift",
+			);
+			target = B14518642F738B60003FAC81 /* StepGoalNotificationService */;
+		};
+		B18DA9132F784F59007EEF92 /* Exceptions for "Onboarding" folder in "StepGoalTrackerWatch Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				GoalSetupView.swift,
+			);
+			target = B1CF3F182F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App */;
+		};
 		B1D596BC2F58ADF300FCB737 /* Exceptions for "StepGoalTracker" folder in "StepGoalTracker" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -97,6 +147,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				B14517B32F674AF1003FAC81 /* Exceptions for "Shared" folder in "StepGoalTrackerWatch Watch App" target */,
+				B14518762F756810003FAC81 /* Exceptions for "Shared" folder in "StepGoalNotificationService" target */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -113,8 +164,25 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				B14517B42F674B29003FAC81 /* Exceptions for "Utilities" folder in "StepGoalTrackerWatch Watch App" target */,
+				B14518852F75E7EB003FAC81 /* Exceptions for "Utilities" folder in "StepGoalNotificationService" target */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		B14518662F738B60003FAC81 /* StepGoalNotificationService */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B14518702F738B60003FAC81 /* Exceptions for "StepGoalNotificationService" folder in "StepGoalNotificationService" target */,
+			);
+			path = StepGoalNotificationService;
+			sourceTree = "<group>";
+		};
+		B18DA90A2F783E52007EEF92 /* Onboarding */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B18DA9132F784F59007EEF92 /* Exceptions for "Onboarding" folder in "StepGoalTrackerWatch Watch App" target */,
+			);
+			path = Onboarding;
 			sourceTree = "<group>";
 		};
 		B1CF3F002F319F6D009CFBB5 /* StepGoalTracker */ = {
@@ -133,6 +201,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		B14518622F738B60003FAC81 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B1CF3EFB2F319F6D009CFBB5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -161,12 +236,14 @@
 		B1CF3EF52F319F6D009CFBB5 = {
 			isa = PBXGroup;
 			children = (
+				B18DA90A2F783E52007EEF92 /* Onboarding */,
 				B14517A32F6744F9003FAC81 /* Utilities */,
 				B145176E2F610A07003FAC81 /* Shared */,
 				B14517702F610A46003FAC81 /* Tabs */,
 				B14517432F610097003FAC81 /* Notifications */,
 				B1CF3F002F319F6D009CFBB5 /* StepGoalTracker */,
 				B1CF3F1A2F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App */,
+				B14518662F738B60003FAC81 /* StepGoalNotificationService */,
 				B11560A82F53BEEA0094789A /* Frameworks */,
 				B1CF3EFF2F319F6D009CFBB5 /* Products */,
 			);
@@ -177,6 +254,7 @@
 			children = (
 				B1CF3EFE2F319F6D009CFBB5 /* StepGoalTracker.app */,
 				B1CF3F192F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App.app */,
+				B14518652F738B60003FAC81 /* StepGoalNotificationService.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -184,6 +262,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		B14518642F738B60003FAC81 /* StepGoalNotificationService */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B145186D2F738B60003FAC81 /* Build configuration list for PBXNativeTarget "StepGoalNotificationService" */;
+			buildPhases = (
+				B14518612F738B60003FAC81 /* Sources */,
+				B14518622F738B60003FAC81 /* Frameworks */,
+				B14518632F738B60003FAC81 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				B14518662F738B60003FAC81 /* StepGoalNotificationService */,
+			);
+			name = StepGoalNotificationService;
+			packageProductDependencies = (
+			);
+			productName = StepGoalNotificationService;
+			productReference = B14518652F738B60003FAC81 /* StepGoalNotificationService.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		B1CF3EFD2F319F6D009CFBB5 /* StepGoalTracker */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B1CF3F112F319F6F009CFBB5 /* Build configuration list for PBXNativeTarget "StepGoalTracker" */;
@@ -192,17 +292,20 @@
 				B1CF3EFB2F319F6D009CFBB5 /* Frameworks */,
 				B1CF3EFC2F319F6D009CFBB5 /* Resources */,
 				B1CF3F2A2F31A3B3009CFBB5 /* Embed Watch Content */,
+				B14518712F738B60003FAC81 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				B11560AA2F53BEEA0094789A /* PBXTargetDependency */,
+				B145186B2F738B60003FAC81 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				B14517432F610097003FAC81 /* Notifications */,
 				B145176E2F610A07003FAC81 /* Shared */,
 				B14517702F610A46003FAC81 /* Tabs */,
 				B14517A32F6744F9003FAC81 /* Utilities */,
+				B18DA90A2F783E52007EEF92 /* Onboarding */,
 				B1CF3F002F319F6D009CFBB5 /* StepGoalTracker */,
 			);
 			name = StepGoalTracker;
@@ -230,6 +333,7 @@
 				B145176E2F610A07003FAC81 /* Shared */,
 				B14517702F610A46003FAC81 /* Tabs */,
 				B14517A32F6744F9003FAC81 /* Utilities */,
+				B18DA90A2F783E52007EEF92 /* Onboarding */,
 				B1CF3F1A2F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App */,
 			);
 			name = "StepGoalTrackerWatch Watch App";
@@ -246,9 +350,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1620;
+				LastSwiftUpdateCheck = 2630;
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
+					B14518642F738B60003FAC81 = {
+						CreatedOnToolsVersion = 26.3;
+					};
 					B1CF3EFD2F319F6D009CFBB5 = {
 						CreatedOnToolsVersion = 16.2;
 					};
@@ -276,11 +383,19 @@
 			targets = (
 				B1CF3EFD2F319F6D009CFBB5 /* StepGoalTracker */,
 				B1CF3F182F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App */,
+				B14518642F738B60003FAC81 /* StepGoalNotificationService */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		B14518632F738B60003FAC81 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B1CF3EFC2F319F6D009CFBB5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -298,6 +413,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		B14518612F738B60003FAC81 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B1CF3EFA2F319F6D009CFBB5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -320,9 +442,84 @@
 			target = B1CF3F182F31A3B0009CFBB5 /* StepGoalTrackerWatch Watch App */;
 			targetProxy = B11560A92F53BEEA0094789A /* PBXContainerItemProxy */;
 		};
+		B145186B2F738B60003FAC81 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B14518642F738B60003FAC81 /* StepGoalNotificationService */;
+			targetProxy = B145186A2F738B60003FAC81 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		B145186E2F738B60003FAC81 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = StepGoalNotificationService/StepGoalNotificationService.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 7;
+				DEVELOPMENT_TEAM = DXZ6DQRHD3;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = StepGoalNotificationService/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = StepGoalNotificationService;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = "$(SHARED_APP_VERSION)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.shreyas.StepGoalTracker.StepGoalNotificationService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		B145186F2F738B60003FAC81 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = StepGoalNotificationService/StepGoalNotificationService.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 7;
+				DEVELOPMENT_TEAM = DXZ6DQRHD3;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = StepGoalNotificationService/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = StepGoalNotificationService;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = "$(SHARED_APP_VERSION)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.shreyas.StepGoalTracker.StepGoalNotificationService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
 		B1CF3F0F2F319F6F009CFBB5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -381,6 +578,8 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				SHARED_APP_BUILD = 9;
+				SHARED_APP_VERSION = 1.0;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -437,6 +636,8 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				SHARED_APP_BUILD = 9;
+				SHARED_APP_VERSION = 1.0;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -451,10 +652,11 @@
 				CODE_SIGN_ENTITLEMENTS = StepGoalTracker/StepGoalTracker.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_ASSET_PATHS = "\"StepGoalTracker/Preview Content\"";
 				DEVELOPMENT_TEAM = DXZ6DQRHD3;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = StepGoalTracker/Info.plist;
@@ -466,15 +668,18 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = "$(SHARED_APP_VERSION)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.shreyas.StepGoalTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SHARED_APP_BUILD = "$(SHARED_APP_BUILD)";
+				SHARED_APP_VERSION = 1;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -482,6 +687,8 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
+				VERSIONING_SYSTEM = "apple-generic";
+				a = 1.0;
 			};
 			name = Debug;
 		};
@@ -494,10 +701,11 @@
 				CODE_SIGN_ENTITLEMENTS = StepGoalTracker/StepGoalTracker.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_ASSET_PATHS = "\"StepGoalTracker/Preview Content\"";
 				DEVELOPMENT_TEAM = DXZ6DQRHD3;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)";
 				INFOPLIST_FILE = StepGoalTracker/Info.plist;
@@ -509,15 +717,18 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = "$(SHARED_APP_VERSION)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.shreyas.StepGoalTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SHARED_APP_BUILD = "$(SHARED_APP_BUILD)";
+				SHARED_APP_VERSION = 1;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -525,6 +736,8 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
+				VERSIONING_SYSTEM = "apple-generic";
+				a = 1.0;
 			};
 			name = Release;
 		};
@@ -535,7 +748,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "StepGoalTrackerWatch Watch App/StepGoalTrackerWatch Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_ASSET_PATHS = "\"StepGoalTrackerWatch Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = DXZ6DQRHD3;
 				ENABLE_PREVIEWS = YES;
@@ -550,7 +763,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = "$(SHARED_APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.shreyas.StepGoalTracker.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -569,7 +782,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "StepGoalTrackerWatch Watch App/StepGoalTrackerWatch Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_ASSET_PATHS = "\"StepGoalTrackerWatch Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = DXZ6DQRHD3;
 				ENABLE_PREVIEWS = YES;
@@ -584,7 +797,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = "$(SHARED_APP_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.shreyas.StepGoalTracker.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -599,6 +812,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		B145186D2F738B60003FAC81 /* Build configuration list for PBXNativeTarget "StepGoalNotificationService" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B145186E2F738B60003FAC81 /* Debug */,
+				B145186F2F738B60003FAC81 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		B1CF3EF92F319F6D009CFBB5 /* Build configuration list for PBXProject "StepGoalTracker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

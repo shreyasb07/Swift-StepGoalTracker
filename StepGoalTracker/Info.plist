@@ -18,6 +18,7 @@
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>com.shreyas.StepGoalTracker</string>
+		<string>com.shreyas.StepGoalTracker.refreshStreakTask</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

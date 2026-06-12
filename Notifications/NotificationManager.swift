@@ -12,6 +12,7 @@ class NotificationManager: NSObject,ObservableObject, UNUserNotificationCenterDe
     static let shared = NotificationManager()
     @Published var authorizationStatus: UNAuthorizationStatus = .notDetermined
     @Published var tappedNotificationType: NotificationType? = nil
+    @Published var weeklyReportWeekOffset: Int = -1
     
     enum NotificationType {
         case milestone
@@ -34,6 +35,7 @@ class NotificationManager: NSObject,ObservableObject, UNUserNotificationCenterDe
             if identifier.hasPrefix("milestone_"){
                 self.tappedNotificationType = .milestone
             } else if identifier == "weekly_report" {
+                self.weeklyReportWeekOffset = -1
                 self.tappedNotificationType = .weeklyReport
             }
         }
